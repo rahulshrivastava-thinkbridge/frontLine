@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-6">
+        <h2>
+            Invoice Details
+        </h2>
+    </div>
+    <div class="col-6 text-right">
+        <a class="text-primary f-right" (click)="backToInvoicing()">Back to Invoices</a>
+    </div>
+</div>
+<div class="row">
+<div class="col-12">
+    <div class="customHeight">
+        <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData" style="height: 100%;width:100%" class="agGridHorizontalScroll ag-theme-balham"></ag-grid-angular>
+    </div>
+</div>
+</div>
