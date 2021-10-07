@@ -12,17 +12,15 @@ import { Router } from '@angular/router';
   styleUrls: ['./invoice-list.component.scss']
 })
 export class InvoiceListComponent implements OnInit {
-  @ViewChild('agGridParentDiv', {read: ElementRef}) public agGridDiv;
+  @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv;
 
-  public modules : Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule]]
+  public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule]]
   public agGridOption: GridOptions;
-  public rowData     : any;
+  public rowData: any;
   public gridApi: any;
   public apiSuccessFull: boolean;
 
-  public sendMsg(text, data)
-  {
-    console.log(data.Id);
+  public sendMsg(text, data) {
     this.router.navigateByUrl('/invoicedetail/?Id=' + data.Id);
   }
 
@@ -50,27 +48,26 @@ export class InvoiceListComponent implements OnInit {
     var result = yearNumber * 10000 + monthNumber * 100 + dayNumber;
     return result;
   }
-  
-  private getGridConfig()
-  {
+
+  private getGridConfig() {
     let vm = this
-    this.agGridOption= {
-      defaultColDef                : { flex: 1, minWidth: 100, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs:[], floatingFilter: true},
-      rowSelection                 : 'multiple',
-      enableMultiRowDragging       : true,
-      suppressRowClickSelection    : true,
-      rowDragManaged               : true,
-      suppressMoveWhenRowDragging  : true,
+    this.agGridOption = {
+      defaultColDef: { flex: 1, minWidth: 304, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true },
+      rowSelection: 'multiple',
+      enableMultiRowDragging: true,
+      suppressRowClickSelection: true,
+      rowDragManaged: true,
+      suppressMoveWhenRowDragging: true,
       suppressDragLeaveHidesColumns: true,
-      columnDefs                   : this.getColumnDefinition(),
-      animateRows                  : true,
-      groupSelectsChildren         : true,
-      groupDefaultExpanded         : 1,
-      unSortIcon                   : true,
-      context                      : {componentParent: this },
-      suppressContextMenu          : true,
+      columnDefs: this.getColumnDefinition(),
+      animateRows: true,
+      groupSelectsChildren: true,
+      groupDefaultExpanded: 1,
+      unSortIcon: true,
+      context: { componentParent: this },
+      suppressContextMenu: true,
       //noRowsOverlayComponentFramework: NoRowOverlayComponent,
-      noRowsOverlayComponentParams : { noRowsMessageFunc : ()=> this.rowData && this.rowData.length ? 'No matching records found for the required search': 'No invoices to display'},
+      noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length ? 'No matching records found for the required search' : 'No invoices to display' },
       onGridReady,
       onModelUpdated,
     }
@@ -79,52 +76,51 @@ export class InvoiceListComponent implements OnInit {
       vm.gridApi = params;
     }
 
-    function onModelUpdated(params){
-      
-      if(!vm.apiSuccessFull)
-      return;
+    function onModelUpdated(params) {
 
-      if(params.api.getDisplayedRowCount()) params.api.hideOverlay();
+      if (!vm.apiSuccessFull)
+        return;
+
+      if (params.api.getDisplayedRowCount()) params.api.hideOverlay();
       else params.api.showNoRowsOverlay();
-  
+
     }
 
   }
 
-  private getColumnDefinition()
-  {
+  private getColumnDefinition() {
     return [
       {
         headerName: 'Invoice #',
-        field     : 'InvoiceCode',
-        tooltipValueGetter (params) {
+        field: 'InvoiceCode',
+        tooltipValueGetter(params) {
           return params.value;
         },
-        sort : 'asc',
+        sort: 'asc',
         maxWidth: 200,
         cellRendererFramework: InvoiceCodeComponentComponent,
       },
       {
         headerName: 'Invoice Date',
-        field     : 'InvoiceDate',
-        filter:'agDateColumnFilter',filterParams:{ filterOptions:['Equals'], suppressAndOrCondition:true },
+        field: 'InvoiceDate',
+        filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
       },
       {
         headerName: 'UploadedDate',
-        field     : 'UploadedDate',
-        filter:'agDateColumnFilter',
+        field: 'UploadedDate',
+        filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
       },
       ,
       {
         headerName: 'Description',
-        field     : 'Description'
+        field: 'Description'
       },
       {
         headerName: 'Status',
-        field     : 'EbillerStatus'
-      },     
+        field: 'EbillerStatus'
+      },
       // {
       //   headerName           : 'Action',
       //   cellRendererFramework: ActionForEditDeleteComponent,
@@ -136,16 +132,14 @@ export class InvoiceListComponent implements OnInit {
     ]
   }
 
-  private getData()
-  {
+  private getData() {
     //Uncomment the ine from 136 to 141
     this.invoicingService.getInvoiceList()
-    .subscribe((response) => {
-      console.log(response);
-      this.rowData = response;
-      this.setGridColSizeAsPerWidth();
-      this.apiSuccessFull = true;
-    })
+      .subscribe((response) => {
+        this.rowData = response;
+        this.setGridColSizeAsPerWidth();
+        this.apiSuccessFull = true;
+      })
 
     //comment the ine from 144 to 163
     // this.rowData = [
@@ -169,26 +163,25 @@ export class InvoiceListComponent implements OnInit {
     //   },
     // ]
   }
-  
+
   private autoSizeAll() {
     let allColumnIds = [];
     let gridColumnApi = this.gridApi.columnApi
-    gridColumnApi.getAllColumns().forEach(function(column) {
+    gridColumnApi.getAllColumns().forEach(function (column) {
       allColumnIds.push(column.colId);
     });
     gridColumnApi.autoSizeColumns(allColumnIds);
   }
 
-  private setGridColSizeAsPerWidth()
-  {
+  private setGridColSizeAsPerWidth() {
     setTimeout(() => {
       this.autoSizeAll();
       let width = 0;
       let gridColumnApi = this.gridApi.columnApi
-      gridColumnApi.getAllColumns().forEach(function(column) {
+      gridColumnApi.getAllColumns().forEach(function (column) {
         width = width + column.getActualWidth();
       });
-      if(this.agGridDiv.nativeElement && width < this.agGridDiv.nativeElement.offsetWidth )
+      if (this.agGridDiv && width < this.agGridDiv.nativeElement.offsetWidth)
         this.gridApi.api.sizeColumnsToFit();
     }, 1);
   }
@@ -199,7 +192,7 @@ export class InvoiceListComponent implements OnInit {
   }
 
   constructor(
-    private router : Router,
+    private router: Router,
     private invoicingService: InvoicingService
   ) { }
 
