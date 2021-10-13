@@ -1,0 +1,47 @@
+<div class="backgroundColorMain">
+    <div class="card mx-auto">
+        <div class="images mx-auto mt-5">
+        </div>
+        <form [formGroup]="loginForm">
+            <div class="rows field mt-5">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <input type="text" formControlName="userName" class="form-control" placeholder="{{userName}}"
+                            [ngClass]="{ 'is-invalid': submitted && f.userName.errors }" />
+                        <div *ngIf="submitted && f.userName.errors" class="invalid-feedback">
+                            <div *ngIf="f.userName.errors.required"> {{userError}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="rows field " style="margin-top: 24px;">
+                <div class="col-md-12">
+                    <div class="form-group felids">
+                        <input type="password" formControlName="password" class="form-control"
+                            placeholder=" {{passwordName}}  "
+                            [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+                            type="{{ hide ? 'password' : 'text'}}" />
+                        <i class="fa fa-eye-slash" aria-hidden="true" (click)="hide = !hide" [hidden]="showPassword"
+                            (click)=show()> </i>
+                        <i class="fa fa-eye" aria-hidden="true" (click)="hide = !hide" [hidden]="!showPassword"
+                            (click)=hides()></i>
+                        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                            <div *ngIf="f.password.errors.required"> {{passwordError}} </div>
+                            <div *ngIf="f.password.errors.minlength"> {{passwordErrorMinlength}} </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 checkbox">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" name="remember"> {{rememberMe}}
+                    </label>
+                    <a class="forgotPassword" [routerLink]="[' ']"> {{forgotPassword}} </a>
+                </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-sm login" (click)="onLogin()"> {{loginButton}} <i
+                    class="fas fa-sign-in-alt ms-1"></i></button>
+        </form>
+    </div>
+</div>

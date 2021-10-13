@@ -7,20 +7,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./invoice-code-component.component.scss']
 })
 export class InvoiceCodeComponentComponent implements ICellRendererAngularComp {
+  public params: any;
 
-  params : any;
-
-  agInit(params) {
+  agInit(params: any): void {
     this.params = params;
   }
 
-  sendMsgToParent(text,node)
-  {
+  sendMsgToParent(text, node) {
     this.params.context.componentParent.sendMsg('', node);
   }
 
-  refresh()
-  {
+  refresh(params: any): boolean {
     return false;
   }
 

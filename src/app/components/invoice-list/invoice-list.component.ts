@@ -5,6 +5,8 @@ import { MenuModule } from '@ag-grid-enterprise/menu';
 import { InvoicingService } from 'src/app/services/invoicing.service';
 import { InvoiceCodeComponentComponent } from 'src/app/agGridComponents/invoice-code-component/invoice-code-component.component';
 import { Router } from '@angular/router';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { invoiceList } from '../shared/constant';
 
 @Component({
   selector: 'app-invoice-list',
@@ -12,16 +14,30 @@ import { Router } from '@angular/router';
   styleUrls: ['./invoice-list.component.scss']
 })
 export class InvoiceListComponent implements OnInit {
+  @HostListener('window:resize', ['$event'])
   @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv;
-
   public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule]]
   public agGridOption: GridOptions;
   public rowData: any;
   public gridApi: any;
   public apiSuccessFull: boolean;
+  public invoiceList: string;
+
+  constructor(private router: Router, private invoicingService: InvoicingService) {
+    this.invoiceList = invoiceList.INVOICE_LIST;
+  }
+
+  ngOnInit(): void {
+    this.getGridConfig();
+    this.getData();
+  }
+
+  public onResize(event) {
+    this.setGridColSizeAsPerWidth();
+  }
 
   public sendMsg(text, data) {
-    this.router.navigateByUrl('/invoicedetail/?Id=' + data.Id);
+    this.router.navigateByUrl('/invoicedetail/?Id=' + data.InvoiceNumber);
   }
 
   private dateComparator(date1, date2) {
@@ -38,6 +54,7 @@ export class InvoiceListComponent implements OnInit {
     }
     return date1Number - date2Number;
   }
+
   private monthToComparableNumber(date) {
     if (date === undefined || date === null || date.length !== 10) {
       return null;
@@ -77,13 +94,10 @@ export class InvoiceListComponent implements OnInit {
     }
 
     function onModelUpdated(params) {
-
       if (!vm.apiSuccessFull)
         return;
-
       if (params.api.getDisplayedRowCount()) params.api.hideOverlay();
       else params.api.showNoRowsOverlay();
-
     }
 
   }
@@ -91,14 +105,15 @@ export class InvoiceListComponent implements OnInit {
   private getColumnDefinition() {
     return [
       {
-        headerName: 'Invoice #',
-        field: 'InvoiceCode',
-        tooltipValueGetter(params) {
-          return params.value;
-        },
-        sort: 'asc',
-        maxWidth: 200,
-        cellRendererFramework: InvoiceCodeComponentComponent,
+        headerName: '#',
+        field: 'InvoiceId',
+        // cellRendererFramework: InvoiceCodeComponentComponent,
+      },
+      {
+        headerName: 'Uploaded Date',
+        field: 'UploadedDate',
+        filter: 'agDateColumnFilter',
+        comparator: this.dateComparator,
       },
       {
         headerName: 'Invoice Date',
@@ -106,20 +121,68 @@ export class InvoiceListComponent implements OnInit {
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
       },
+
       {
-        headerName: 'UploadedDate',
-        field: 'UploadedDate',
+        headerName: 'Invoice #',
+        field: 'InvoiceNumber',
+        tooltipValueGetter(params) {
+          return params.value;
+        },
+        sort: 'asc',
+        maxWidth: 200,
+        //   cellRendererFramework: InvoiceCodeComponentComponent,
+      },
+      {
+        headerName: 'Client',
+        field: 'ClientName'
+      },
+      {
+        headerName: 'Firm Matter ID',
+        field: 'FirmMatterId'
+      },
+
+      {
+        headerName: 'Firm Client',
+        field: 'LawFirmName'
+      },
+      {
+        headerName: 'Firm Client Matter ID',
+        field: 'ClientMatterId'
+      },
+      {
+        headerName: 'Original Total',
+        field: 'OriginalTotal'
+      },
+      {
+        headerName: 'Modified Total',
+        field: 'ModifiedTotal'
+      },
+
+      {
+        headerName: 'Status',
+        field: 'Status'
+      },
+      {
+        headerName: 'Appeal Status',
+        field: 'AppealStatus'
+      },
+      {
+        headerName: 'ML Status',
+        field: 'MLStatus'
+      },
+      {
+        headerName: 'Appeal Deadline',
+        field: 'AppealDeadlineDate',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
       },
-      ,
       {
-        headerName: 'Description',
-        field: 'Description'
+        headerName: 'Preparer',
+        field: 'Preparer'
       },
       {
-        headerName: 'Status',
-        field: 'EbillerStatus'
+        headerName: 'Owner',
+        field: 'WorkFlowOwner'
       },
       // {
       //   headerName           : 'Action',
@@ -133,35 +196,12 @@ export class InvoiceListComponent implements OnInit {
   }
 
   private getData() {
-    //Uncomment the ine from 136 to 141
     this.invoicingService.getInvoiceList()
       .subscribe((response) => {
         this.rowData = response;
         this.setGridColSizeAsPerWidth();
         this.apiSuccessFull = true;
       })
-
-    //comment the ine from 144 to 163
-    // this.rowData = [
-    //   {
-    //     "Id": 586,
-    //     "InvoiceClientId": 586,
-    //     "UploadedDate": "02/11/2012",
-    //     "InvoiceCode": "458502",
-    //     "InvoiceDate": "07/11/2012",
-    //     "Description": "Services Rendered",
-    //     "EbillerStatus": "Activated",
-    //   },
-    //   {
-    //     "Id": 587,
-    //     "InvoiceClientId": 587,
-    //     "UploadedDate": "02/12/2012",
-    //     "InvoiceCode": "458502",
-    //     "InvoiceDate": "05/11/2012",
-    //     "Description": "Services Rendered",
-    //     "EbillerStatus": "Released",
-    //   },
-    // ]
   }
 
   private autoSizeAll() {
@@ -184,21 +224,6 @@ export class InvoiceListComponent implements OnInit {
       if (this.agGridDiv && width < this.agGridDiv.nativeElement.offsetWidth)
         this.gridApi.api.sizeColumnsToFit();
     }, 1);
-  }
-
-  @HostListener('window:resize', ['$event'])
-  public onResize(event) {
-    this.setGridColSizeAsPerWidth();
-  }
-
-  constructor(
-    private router: Router,
-    private invoicingService: InvoicingService
-  ) { }
-
-  ngOnInit(): void {
-    this.getGridConfig();
-    this.getData();
   }
 
 }

@@ -1,7 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@ag-grid-community/all-modules/dist/styles/ag-grid.css';
-@import '~@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
+//@import '~@ag-grid-community/all-modules/dist/styles/ag-theme-balham.css';
+@import '~@ag-grid-community/all-modules/dist/styles/ag-theme-material.css';
+
 @import '~bootstrap/dist/css/bootstrap.css';
 @import '~bootstrap/dist/css/bootstrap-grid.css';
 
 @import './assets/customStyles.scss';
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/dist/css/bootstrap.css";
+
+
+

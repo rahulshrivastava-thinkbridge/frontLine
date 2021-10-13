@@ -17,7 +17,7 @@ export class InvoiceDetailsComponent implements OnInit {
   public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule]]
   public agGridOption: GridOptions;
   public rowData: any;
-  public data:any;
+  public data: any;
   public gridApi: any;
   public apiSuccessFull: boolean;
   public id: number;
@@ -88,6 +88,7 @@ export class InvoiceDetailsComponent implements OnInit {
         field: 'ChargeDate',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
+        minWidth: 180
       },
       // {
       //   headerName: 'UploadedDate',
@@ -167,14 +168,14 @@ export class InvoiceDetailsComponent implements OnInit {
     //Uncomment the line from 137 to 142
     this.invoicingService.getInvoiceDetail(this.id)
       .subscribe((response) => {
-        this.rowData = response;
-        console.log('dsd=>', this.rowData);
-        
-        
+        this.data = response;
+        for (let i = 0; i < this.data.length; i++) {
+          this.data[i]["MLApprovalStatus"] = 'Approved', this.data[i]["MLPreparationNotes"] = 'Demo Notes';
+        }
+        this.rowData = this.data;
         this.setGridColSizeAsPerWidth();
         this.apiSuccessFull = true;
       })
-
 
     //comment the ine from 145 to 164
     // this.rowData = [
