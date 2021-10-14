@@ -1,4 +1,4 @@
-<div class="backgroundColorMain">
+<!-- <div class="backgroundColorMain">
     <div class="card mx-auto">
         <div class="images mx-auto mt-5">
         </div>
@@ -44,4 +44,71 @@
                     class="fas fa-sign-in-alt ms-1"></i></button>
         </form>
     </div>
+</div> -->
+
+<div class="body">
+    <div class="loginContainer">
+        <div class="split left">
+            <a href="#" class="logo"><img src="./assets/frontlinehirez.png" alt="logoImage"></a>
+        </div>
+        <div class="split right">
+            <h3>Login</h3>
+            <form [formGroup]="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" formControlName="userName" class="form-control" placeholder="{{userName}}"
+                        [ngClass]="{ 'is-invalid': submitted && f.userName.errors }" />
+                    <div *ngIf="submitted && f.userName.errors" class="invalid-feedback">
+                        <div *ngIf="f.userName.errors.required"> {{userError}}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <div class="input-icons">
+                        <i class="far fa-eye-slash" aria-hidden="true" (click)="hide = !hide" [hidden]="showPassword"
+                        (click)=show() style="position: absolute; width: 100%; margin-bottom: 10px; padding: 12px; margin-left: 276px;"></i>
+
+                        <i class="far fa-eye" aria-hidden="true" (click)="hide = !hide" [hidden]="!showPassword"
+                        (click)=hides() style="position: absolute; width: 100%; margin-bottom: 10px; padding: 12px; margin-left: 276px;"></i>
+
+
+                        <input type="password" formControlName="password" class="form-control"
+                        placeholder=" {{passwordName}}  " [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+                        type="{{ hide ? 'password' : 'text'}}" />
+                        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                            <div *ngIf="f.password.errors.required"> {{passwordError}} </div>
+                            <div *ngIf="f.password.errors.minlength"> {{passwordErrorMinlength}} </div>
+                        </div> 
+                    </div>
+                        <!-- <label for="password">Password</label>
+                    <input type="password" formControlName="password" class="form-control"
+                        placeholder=" {{passwordName}}  " [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+                        type="{{ hide ? 'password' : 'text'}}" />
+                    <i class="fa fa-eye-slash" aria-hidden="true" (click)="hide = !hide" [hidden]="showPassword"
+                        (click)=show()> </i>
+                    <i class="fa fa-eye" aria-hidden="true" (click)="hide = !hide" [hidden]="!showPassword"
+                        (click)=hides()></i>
+                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                        <div *ngIf="f.password.errors.required"> {{passwordError}} </div>
+                        <div *ngIf="f.password.errors.minlength"> {{passwordErrorMinlength}} </div>
+                    </div> -->
+                    </div>
+                    <div class="form-group form-check">
+                        <div class="row">
+                            <div class="col">
+                                <input type="checkbox" class="form-check-input" id="rememberpwd">
+                                <label class="form-check-label" for="rememberpwd">Remember Me</label>
+                            </div>
+                            <div class="col">
+                                <a href="" style="float: right">Forgot Password</a>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" (click)="onLogin()">Login &nbsp; <i
+                            class="fas fa-sign-in-alt"></i> </button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
 </div>

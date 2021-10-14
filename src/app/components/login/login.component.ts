@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { stringify } from 'querystring';
 import { LoginService } from '../../services/login.service';
 import { loginForm } from '../shared/constant';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -71,12 +72,31 @@ export class LoginComponent implements OnInit {
         userName: userName,
         password: password,
       }
-      this.loginService.login(userDetail).subscribe((response) => {
+      const unsubscribe = this.loginService.login(userDetail).subscribe((response) => {
         const data = response;
-        localStorage.setItem('firstName', response.firstName)
-        localStorage.setItem('lastName', response.lastName)
-        localStorage.setItem('token', data.token);
-        this.router.navigate(['/invoices']);
+        if (data.token) {
+          Swal.fire(
+            'Good job!',
+            'Welcome aboard ' +  response.firstName + ' ' + response.lastName + '!',
+            'success'
+          )
+
+          localStorage.setItem('firstName', response.firstName)
+          localStorage.setItem('lastName', response.lastName)
+          localStorage.setItem('token', data.token);
+          this.router.navigate(['/invoices']);
+
+
+        }
+      }, (error) => {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Invalid credentials!',
+        })
+      }, () => {
+      }).add(() => {
+        unsubscribe.unsubscribe();
       })
     }
   }

@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import { InvoiceDetailsComponent } from './components/invoice-details/invoice-details.component';
 import { InvoiceListComponent } from './components/invoice-list/invoice-list.component';
 import { LoginComponent } from './components/login/login.component';
+import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
   //{ path: '', component: AppComponent},
@@ -13,8 +14,8 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   { path: 'login', component: LoginComponent },
-  { path: 'invoices', component: InvoiceListComponent },
-  { path: 'invoicedetail/:id', component: InvoiceDetailsComponent },
+  { path: 'invoices', component: InvoiceListComponent, canActivate: [AuthGuard]  },
+  { path: 'invoicedetail/:id', component: InvoiceDetailsComponent , canActivate: [AuthGuard] },
 ];
 
 @NgModule({

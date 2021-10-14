@@ -15,6 +15,7 @@ import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
 import { LocationStrategy } from '@angular/common';
 import { HttpInterceptorInterceptor } from './components/shared/http-interceptor.interceptor';
 import { HeaderComponent } from './components/shared/header/header.component';
+import { AuthGuard } from './auth.guard'
 
 @NgModule({
   declarations: [
@@ -34,7 +35,7 @@ import { HeaderComponent } from './components/shared/header/header.component';
     NgbModule,
     NgxBootstrapIconsModule.pick(allIcons)
   ],
-  providers: [InvoicingService,
+  providers: [InvoicingService, AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]

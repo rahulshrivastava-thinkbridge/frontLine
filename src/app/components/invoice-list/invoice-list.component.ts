@@ -22,6 +22,7 @@ export class InvoiceListComponent implements OnInit {
   public gridApi: any;
   public apiSuccessFull: boolean;
   public invoiceList: string;
+  public heaader = []
 
   constructor(private router: Router, private invoicingService: InvoicingService) {
     this.invoiceList = invoiceList.INVOICE_LIST;
@@ -91,6 +92,7 @@ export class InvoiceListComponent implements OnInit {
 
     function onGridReady(params) {
       vm.gridApi = params;
+      //this.heaader = params.columnApi.columnController.columnDefs;
     }
 
     function onModelUpdated(params) {
@@ -105,10 +107,20 @@ export class InvoiceListComponent implements OnInit {
   private getColumnDefinition() {
     return [
       {
-        headerName: '#',
-        field: 'InvoiceId',
-        // cellRendererFramework: InvoiceCodeComponentComponent,
+        headerName: 'Invoice #',
+        field: 'InvoiceNumber',
+        tooltipValueGetter(params) {
+          return params.value;
+        },
+        sort: 'asc',
+        maxWidth: 200,
+        //   cellRendererFramework: InvoiceCodeComponentComponent,
       },
+      // {
+      //   headerName: '#',
+      //   field: 'InvoiceId',
+       
+      // },
       {
         headerName: 'Uploaded Date',
         field: 'UploadedDate',
@@ -122,33 +134,24 @@ export class InvoiceListComponent implements OnInit {
         comparator: this.dateComparator,
       },
 
-      {
-        headerName: 'Invoice #',
-        field: 'InvoiceNumber',
-        tooltipValueGetter(params) {
-          return params.value;
-        },
-        sort: 'asc',
-        maxWidth: 200,
-        //   cellRendererFramework: InvoiceCodeComponentComponent,
-      },
+
       {
         headerName: 'Client',
         field: 'ClientName'
       },
-      {
-        headerName: 'Firm Matter ID',
-        field: 'FirmMatterId'
-      },
+      // {
+      //   headerName: 'Firm Matter ID',
+      //   field: 'FirmMatterId'
+      // },
 
       {
         headerName: 'Firm Client',
         field: 'LawFirmName'
       },
-      {
-        headerName: 'Firm Client Matter ID',
-        field: 'ClientMatterId'
-      },
+      // {
+      //   headerName: 'Firm Client Matter ID',
+      //   field: 'ClientMatterId'
+      // },
       {
         headerName: 'Original Total',
         field: 'OriginalTotal'
@@ -193,6 +196,7 @@ export class InvoiceListComponent implements OnInit {
       //   minWidth             : 140
       // }
     ]
+
   }
 
   private getData() {
