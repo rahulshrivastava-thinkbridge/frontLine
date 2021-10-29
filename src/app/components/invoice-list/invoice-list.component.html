@@ -1,32 +1,22 @@
 <app-header></app-header>
-
-<div class="row mx-0 mt-4">
-    <div class="col-md-8">
-    </div>
-    <div class="col-md-4 text-right" style="text-align: right;    padding: 0px 20px;">
-        <button class="filterbutton" type="button" class="btn btn-primary " style="margin-right: 10px;">Filter <i
-                class="fas fa-filter ms-2"></i>
-        </button>
-        <div class="input-group filtervalue float-right" style="float: right;">
-            <input type="text" class="form-control " placeholder="Filter value...." aria-label="Recipient's username"
-                style="float: right;" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-primary " type="button"><i class="fa fa-search"></i></button>
-            </div>
-        </div>
-    </div>
-</div>
-<div class="card">
+<div class="body">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="#">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Invoice List</li>
+  </ol>
+  <div class="card">
     <div class="headername my-2"> {{invoiceList}} </div>
-
     <div class="border-top mx-3 mt-2"></div>
     <div class="row">
-        <div class="col-12">
-            <div class="customHeight">
-                <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData"
-                    ag-grid="gridOptions" [pagination]='true' class="agGridHorizontalScroll ag-theme-material grid">
-                </ag-grid-angular>
-            </div>
+      <div class="col-12">
+        <div class="customHeight">
+          <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData" ag-grid="gridOptions"
+            [sortingOrder]="sortingOrder" [defaultColDef]="defaultColDef" [rowModelType]="rowModelType" 
+            [serverSideStoreType]="serverSideStoreType" (gridReady)="onGridReady($event)"
+   
+            class="agGridHorizontalScroll ag-theme-material grid">
+          </ag-grid-angular>
         </div>
+      </div>
     </div>
-</div>
+  </div>

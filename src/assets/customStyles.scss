@@ -1,5 +1,5 @@
 .customHeight {
-    height: calc(83vh - 73px);
+    height: calc(85vh - 75px);
     margin: 5px 10px;
 }
 
@@ -13,4 +13,9 @@
 
 a {
     cursor: pointer;
+}
+
+.customHeights {
+    height: calc(50vh - 40px);
+    margin: 5px 10px;
 }

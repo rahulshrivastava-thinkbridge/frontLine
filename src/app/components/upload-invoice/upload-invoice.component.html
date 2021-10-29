@@ -1,0 +1,121 @@
+<!-- <app-header></app-header>
+<div class="uploadinvoicename mx-auto">
+    <h3> Upload Invoice</h3>
+</div>
+<div class="choicefile">
+    <input type="file" class="file-input"  
+    (change)="onFileSelected($event)" #fileUpload>  
+
+
+</div>
+<li class="invoicetext">
+    Upload Invoice
+</li>
+<div class="showinvoice">
+    {{fileName || "No file uploaded yet."}}  
+</div>
+<button type="button" class="btn btn-primary save"  (click)="fileUpload.click()">SUBMIT</button>
+<div class="gotoinvoicelist">
+    <a href="/invoices">Go to Invoice listing </a>
+</div> -->
+<app-header></app-header>
+<div class="body">
+    <h2 class="mb-5">Upload Invoice</h2>
+
+    <!-- Drag and Drop Area -->
+    <div class="dragArea">
+        <div class="icon">
+            <i class="fas fa-file-upload"></i>
+        </div>
+        <header>Drag & Drop to Upload Invoice</header>
+        <span>OR</span>
+        <button class="file-upload-button" >Browse Files
+            <input type="file" #fileUpload (change)="onFileSelected($event)" />
+        </button>
+    </div>
+
+    <!-- No Invoice Uploaded -->
+    <div class="noInvoiceUpload">
+        <h6>Uploaded Invoice</h6>
+        <div class="noInvoiceFileUploaded">
+            <p>No Invoice has been uploaded</p>
+        </div>
+    </div>
+
+    <!-- ---Invoice Uploaded--- -->
+    <div class="invoiceUpload">
+        <h6>Uploaded Invoice</h6>
+        <div class="invoiceFileUploaded">
+            <div class="fileDetails">
+                <div class="icon file" >
+                    <i class="fas fa-file-alt"  *ngIf="fileName"></i>
+                </div>
+                <a style="text-align: center;" *ngIf="fileName" style=" color: #2A79F0 !important;"> {{fileName}} </a>
+                <a *ngIf="!fileName" style="color: black;"> No Invoice has been uploaded</a>
+            </div>
+            <div class="trash" *ngIf="fileName">
+                <i class="fas fa-trash" (click)="deleteinvoice()"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Invoice - Button Disabled -->
+    <button type="button" class="mt-4 disabled" data-toggle="modal" data-target="#errorModal">Submit</button>
+
+    <!-- ---Invoice Available - Button Active--- -->
+    <button type="button" class="mt-4" data-toggle="modal" data-target="#validatingModal"  >Submit</button>
+
+    <a href="/invoices" class="mt-3" data-toggle="modal" data-target="#successModal">Go to Invoice listing</a>
+
+    <!-- Validating Uploaded File Modal -->
+    <div class="modal fade" id="validatingModal" data-backdrop="static" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="alert alert-warning text-center" role="alert">
+                <div class="loader"></div>
+                Please be patient while we validate your Invoice against our Rule Engine.
+            </div>
+        </div>
+    </div>
+
+    <!-- Successful Uploaded File Modal -->
+    <div class="modal fade" id="successModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="alert alert-success" role="alert">
+                Congratulations! Your Invoice is validated successfully.
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Uploaded File Modal -->
+    <div class="modal fade" id="errorModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Invoice Upload Error</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger fileError" role="alert">
+                        There was an error while validating your Invoice, please re-upload the corrected Invoice.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        data-target="#exampleModal">Re-Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+        crossorigin="anonymous"></script>
+</div>

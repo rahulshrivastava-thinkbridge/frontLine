@@ -3,9 +3,12 @@ import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
-  HttpInterceptor
+  HttpInterceptor,
+  HttpClient,
+  HttpResponse
 } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { UserComponentRegistry } from '@ag-grid-community/core';
 
 @Injectable()
 export class HttpInterceptorInterceptor implements HttpInterceptor {
@@ -21,7 +24,8 @@ export class HttpInterceptorInterceptor implements HttpInterceptor {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json; charset=utf-8'
         }
-      });
+      }); 
+
     }
     return next.handle(request);
   }

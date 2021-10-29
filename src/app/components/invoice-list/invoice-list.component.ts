@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
-import { AllCommunityModules, GridOptions, Module } from '@ag-grid-community/all-modules';
+import { AllCommunityModules, GridOptions, IDatasource, IGetRowsParams, Module } from '@ag-grid-community/all-modules';
 import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
 import { MenuModule } from '@ag-grid-enterprise/menu';
 import { InvoicingService } from 'src/app/services/invoicing.service';
@@ -7,6 +7,8 @@ import { InvoiceCodeComponentComponent } from 'src/app/agGridComponents/invoice-
 import { Router } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { invoiceList } from '../shared/constant';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ServerSideRowModelModule, ColumnsToolPanelModule } from '@ag-grid-enterprise/all-modules';
 
 @Component({
   selector: 'app-invoice-list',
@@ -16,21 +18,35 @@ import { invoiceList } from '../shared/constant';
 export class InvoiceListComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv;
-  public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule]]
+  public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule, ServerSideRowModelModule, ColumnsToolPanelModule]]
   public agGridOption: GridOptions;
   public rowData: any;
   public gridApi: any;
   public apiSuccessFull: boolean;
   public invoiceList: string;
-  public heaader = []
+  public filterForm: FormGroup;
+  public sortingOrder;
+  public columnDefs;
+  public defaultColDef;
+  public rowModelType;
+  public serverSideStoreType;
+  public cacheBlockSize;
+  public gridColumnApi;
+  public pageIndex: number;
+  public filterData: string;
+  public filter: any = ' ';
+  public lastLength: any;
+  public chekindex: boolean;
+  private columnTypes;
 
-  constructor(private router: Router, private invoicingService: InvoicingService) {
+  constructor(private router: Router, private invoicingService: InvoicingService, private formBuilder: FormBuilder,) {
     this.invoiceList = invoiceList.INVOICE_LIST;
+    this.rowModelType = 'serverSide';
+    this.serverSideStoreType = 'partial';
   }
 
   ngOnInit(): void {
     this.getGridConfig();
-    this.getData();
   }
 
   public onResize(event) {
@@ -38,7 +54,9 @@ export class InvoiceListComponent implements OnInit {
   }
 
   public sendMsg(text, data) {
-    this.router.navigateByUrl('/invoicedetail/?Id=' + data.InvoiceNumber);
+    console.log('id==>', data);
+    localStorage.setItem('invoicedetail', JSON.stringify(data))
+    this.router.navigateByUrl('/invoicedetail/?Id=' + data.InvoiceId);
   }
 
   private dateComparator(date1, date2) {
@@ -85,14 +103,8 @@ export class InvoiceListComponent implements OnInit {
       context: { componentParent: this },
       suppressContextMenu: true,
       //noRowsOverlayComponentFramework: NoRowOverlayComponent,
-      noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length ? 'No matching records found for the required search' : 'No invoices to display' },
-      onGridReady,
+      noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length == 0 ? 'No matching records found for the required search' : 'No invoices to display' },
       onModelUpdated,
-    }
-
-    function onGridReady(params) {
-      vm.gridApi = params;
-      //this.heaader = params.columnApi.columnController.columnDefs;
     }
 
     function onModelUpdated(params) {
@@ -101,7 +113,181 @@ export class InvoiceListComponent implements OnInit {
       if (params.api.getDisplayedRowCount()) params.api.hideOverlay();
       else params.api.showNoRowsOverlay();
     }
+  }
 
+  onGridReady(params) {
+    this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
+    params.api.setServerSideDatasource(this.serverModalForApi());
+  }
+
+  private serverModalForApi() {
+    return {
+      getRows: (params: any) => {
+        let request = params.request;
+        this.setFilter(request.filterModel)
+        const indexData = request.endRow;
+        this.pageIndex = indexData / 100;
+        let parameters = {
+          pageIndex: this.pageIndex,
+          startRecord: request.startRow,
+          endRecord: request.endRow,
+          filterText: this.filter,
+        }
+        this.invoicingService.invoicePages(parameters)
+          .subscribe((data: any) => {
+            this.rowData = data;
+            if (this.filter) {
+              this.lastLength = data.length;
+            } else {
+              this.lastLength = data.lastRow;
+              // this.lastLength = data.slice(request.startRow, request.endRow);
+            }
+
+            params.success({
+              rowData: data,
+              rowCount: this.lastLength,
+            });
+            // params.success({
+            //   rowCount: data.length,
+            //   rowData: data,
+            // });
+            // rowCount: data.data?.totalCount || 0,
+            // rowData : data.data?.item || []
+          });
+      }
+    }
+  }
+
+  private setFilter(event: any) {
+    console.log('data==>', event);
+    this.filter = ''
+    if (event.InvoiceNumber) {
+      this.filterData = event.InvoiceNumber.filter;
+      this.filter = 'InvoiceNumber Like \'%' + this.filterData + '%\''
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.UploadedDate) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND UploadedDate Like \'%' + event.UploadedDate.dateFrom + '%\' '
+      } else {
+        this.filter = 'UploadedDate Like \'%' + event.UploadedDate.dateFrom + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.InvoiceDate) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND InvoiceDate Like \'%' + event.InvoiceDate.dateFrom + '%\' '
+      } else {
+        this.filter = 'InvoiceDate Like \'%' + event.InvoiceDate.dateFrom + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.ClientName) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND ClientName Like \'%' + event.ClientName.filter + '%\' '
+      } else {
+        this.filter = 'ClientName Like \'%' + event.ClientName.filter + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.LawFirmName) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND LawFirmName Like \'%' + event.LawFirmName.filter + '%\' '
+      } else {
+        this.filter = 'LawFirmName Like \'%' + event.LawFirmName.filter + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.OriginalTotal) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND OriginalTotal Like \'%' + event.OriginalTotal.filter + '%\' '
+      } else {
+        this.filter = 'OriginalTotal Like \'%' + event.OriginalTotal.filter + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.ModifiedTotal) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND ModifiedTotal Like \'%' + event.ModifiedTotal.filter + '%\' '
+      } else {
+        this.filter = 'ModifiedTotal Like \'%' + event.ModifiedTotal.filter + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.Status) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND Status Like \'%' + event.Status.filter + '%\' '
+      } else {
+        this.filter = 'Status Like \'%' + event.Status.filter + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.AppealStatus) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND AppealStatus Like \'%' + event.AppealStatus.filter + '%\' '
+      } else {
+        this.filter = 'AppealStatus Like \'%' + event.AppealStatus.filter + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.MLStatus) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND MLStatus Like \'%' + event.MLStatus.filter + '%\' '
+      } else {
+        this.filter = 'MLStatus Like \'%' + event.MLStatus.filter + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.AppealDeadlineDate) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND AppealDeadlineDate Like \'%' + event.AppealDeadlineDate.dateFrom + '%\' '
+      } else {
+        this.filter = 'AppealDeadlineDate Like \'%' + event.AppealDeadlineDate.dateFrom + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.Preparer) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND Preparer Like \'%' + event.Preparer.filter + '%\' '
+      } else {
+        this.filter = 'Preparer Like \'%' + event.Preparer.filter + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
+
+    if (event.WorkFlowOwner) {
+      if (this.filter) {
+        this.filter = "" + this.filter + '\ AND WorkFlowOwner Like \'%' + event.WorkFlowOwner.filter + '%\' '
+      } else {
+        this.filter = 'WorkFlowOwner Like \'%' + event.WorkFlowOwner.filter + '%\''
+      }
+    } else {
+      this.filter = this.filter
+    }
   }
 
   private getColumnDefinition() {
@@ -114,13 +300,9 @@ export class InvoiceListComponent implements OnInit {
         },
         sort: 'asc',
         maxWidth: 200,
-        //   cellRendererFramework: InvoiceCodeComponentComponent,
+        filter: 'agNumberColumnFilter',
+        cellRendererFramework: InvoiceCodeComponentComponent,
       },
-      // {
-      //   headerName: '#',
-      //   field: 'InvoiceId',
-       
-      // },
       {
         headerName: 'Uploaded Date',
         field: 'UploadedDate',
@@ -133,25 +315,15 @@ export class InvoiceListComponent implements OnInit {
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
       },
-
-
       {
         headerName: 'Client',
-        field: 'ClientName'
+        field: 'ClientName',
+          filter: 'agTextColumnFilter',
       },
-      // {
-      //   headerName: 'Firm Matter ID',
-      //   field: 'FirmMatterId'
-      // },
-
       {
         headerName: 'Firm Client',
         field: 'LawFirmName'
       },
-      // {
-      //   headerName: 'Firm Client Matter ID',
-      //   field: 'ClientMatterId'
-      // },
       {
         headerName: 'Original Total',
         field: 'OriginalTotal'
@@ -160,7 +332,6 @@ export class InvoiceListComponent implements OnInit {
         headerName: 'Modified Total',
         field: 'ModifiedTotal'
       },
-
       {
         headerName: 'Status',
         field: 'Status'
@@ -187,25 +358,7 @@ export class InvoiceListComponent implements OnInit {
         headerName: 'Owner',
         field: 'WorkFlowOwner'
       },
-      // {
-      //   headerName           : 'Action',
-      //   cellRendererFramework: ActionForEditDeleteComponent,
-      //   sortable             : false,
-      //   filter               : false,
-      //   cellRendererParams   : {edit : this.fa.faEdit, delete: this.fa.faTrashAlt, isStandardAg: 'ComputationName'},
-      //   minWidth             : 140
-      // }
     ]
-
-  }
-
-  private getData() {
-    this.invoicingService.getInvoiceList()
-      .subscribe((response) => {
-        this.rowData = response;
-        this.setGridColSizeAsPerWidth();
-        this.apiSuccessFull = true;
-      })
   }
 
   private autoSizeAll() {
@@ -229,5 +382,9 @@ export class InvoiceListComponent implements OnInit {
         this.gridApi.api.sizeColumnsToFit();
     }, 1);
   }
-
 }
+
+function sortAndFilter(response: Object, sortModel: any, filterModel: any) {
+  throw new Error('Function not implemented.');
+}
+

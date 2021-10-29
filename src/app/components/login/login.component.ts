@@ -42,6 +42,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    localStorage.clear();
     this.loginForm = this.formBuilder.group({
       userName: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]]
@@ -80,13 +81,10 @@ export class LoginComponent implements OnInit {
             'Welcome aboard ' +  response.firstName + ' ' + response.lastName + '!',
             'success'
           )
-
           localStorage.setItem('firstName', response.firstName)
           localStorage.setItem('lastName', response.lastName)
           localStorage.setItem('token', data.token);
           this.router.navigate(['/invoices']);
-
-
         }
       }, (error) => {
         Swal.fire({

@@ -16,6 +16,8 @@ import { LocationStrategy } from '@angular/common';
 import { HttpInterceptorInterceptor } from './components/shared/http-interceptor.interceptor';
 import { HeaderComponent } from './components/shared/header/header.component';
 import { AuthGuard } from './auth.guard'
+import { FormsModule } from '@angular/forms';
+import { UploadInvoiceComponent } from './components/upload-invoice/upload-invoice.component';
 
 @NgModule({
   declarations: [
@@ -24,16 +26,20 @@ import { AuthGuard } from './auth.guard'
     InvoiceDetailsComponent,
     InvoiceCodeComponentComponent,
     LoginComponent,
-    HeaderComponent
+    HeaderComponent,
+    UploadInvoiceComponent,
+
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
+    FormsModule,
     ReactiveFormsModule,
     AgGridModule.withComponents([]),
     NgbModule,
-    NgxBootstrapIconsModule.pick(allIcons)
+    NgxBootstrapIconsModule.pick(allIcons) ,
+  
   ],
   providers: [InvoicingService, AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorInterceptor, multi: true },

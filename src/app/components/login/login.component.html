@@ -1,52 +1,4 @@
-<!-- <div class="backgroundColorMain">
-    <div class="card mx-auto">
-        <div class="images mx-auto mt-5">
-        </div>
-        <form [formGroup]="loginForm">
-            <div class="rows field mt-5">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <input type="text" formControlName="userName" class="form-control" placeholder="{{userName}}"
-                            [ngClass]="{ 'is-invalid': submitted && f.userName.errors }" />
-                        <div *ngIf="submitted && f.userName.errors" class="invalid-feedback">
-                            <div *ngIf="f.userName.errors.required"> {{userError}}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="rows field " style="margin-top: 24px;">
-                <div class="col-md-12">
-                    <div class="form-group felids">
-                        <input type="password" formControlName="password" class="form-control"
-                            placeholder=" {{passwordName}}  "
-                            [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
-                            type="{{ hide ? 'password' : 'text'}}" />
-                        <i class="fa fa-eye-slash" aria-hidden="true" (click)="hide = !hide" [hidden]="showPassword"
-                            (click)=show()> </i>
-                        <i class="fa fa-eye" aria-hidden="true" (click)="hide = !hide" [hidden]="!showPassword"
-                            (click)=hides()></i>
-                        <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                            <div *ngIf="f.password.errors.required"> {{passwordError}} </div>
-                            <div *ngIf="f.password.errors.minlength"> {{passwordErrorMinlength}} </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row mt-3">
-                <div class="col-md-12 checkbox">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" name="remember"> {{rememberMe}}
-                    </label>
-                    <a class="forgotPassword" [routerLink]="[' ']"> {{forgotPassword}} </a>
-                </div>
-            </div>
-            <button type="button" class="btn btn-primary btn-sm login" (click)="onLogin()"> {{loginButton}} <i
-                    class="fas fa-sign-in-alt ms-1"></i></button>
-        </form>
-    </div>
-</div> -->
-
-<div class="body">
+<!-- <div class="body">
     <div class="loginContainer">
         <div class="split left">
             <a href="#" class="logo"><img src="./assets/frontlinehirez.png" alt="logoImage"></a>
@@ -81,18 +33,6 @@
                             <div *ngIf="f.password.errors.minlength"> {{passwordErrorMinlength}} </div>
                         </div> 
                     </div>
-                        <!-- <label for="password">Password</label>
-                    <input type="password" formControlName="password" class="form-control"
-                        placeholder=" {{passwordName}}  " [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
-                        type="{{ hide ? 'password' : 'text'}}" />
-                    <i class="fa fa-eye-slash" aria-hidden="true" (click)="hide = !hide" [hidden]="showPassword"
-                        (click)=show()> </i>
-                    <i class="fa fa-eye" aria-hidden="true" (click)="hide = !hide" [hidden]="!showPassword"
-                        (click)=hides()></i>
-                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-                        <div *ngIf="f.password.errors.required"> {{passwordError}} </div>
-                        <div *ngIf="f.password.errors.minlength"> {{passwordErrorMinlength}} </div>
-                    </div> -->
                     </div>
                     <div class="form-group form-check">
                         <div class="row">
@@ -111,4 +51,54 @@
         </div>
     </div>
     <script src="script.js"></script>
+</div> -->
+
+<div class="body">
+    <div class="loginContainer">
+        <!-- Login - Content Right -->
+        <div class="split right">
+            <a href="#" class="logo"><img src="./assets/frontlinehirez.png" alt="logoImage"></a>
+        </div>
+        <!-- Login Form - Content Left -->
+        <div class="split left">
+            <h2>Login</h2>
+            <form [formGroup]="loginForm">
+                <div class="form-group">
+                    <input type="text" formControlName="userName" class="form-control" placeholder="{{userName}}"
+                        [ngClass]="{ 'is-invalid': submitted && f.userName.errors }" required />
+                    <div *ngIf="submitted && f.userName.errors" class="invalid-feedback">
+                        <div *ngIf="f.userName.errors.required"> {{userError}}</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="password" formControlName="password" class="form-control"
+                        placeholder=" {{passwordName}}  " [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+                        type="{{ hide ? 'password' : 'text'}}" required />
+                    <span class="p-viewer">
+                        <i class="far fa-eye-slash" aria-hidden="true" (click)="hide = !hide" [hidden]="showPassword"
+                            (click)=show()></i>
+                        <i class="far fa-eye" aria-hidden="true" (click)="hide = !hide" [hidden]="!showPassword"
+                            (click)=hides()></i>
+                    </span>
+                    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                        <div *ngIf="f.password.errors.required"> {{passwordError}} </div>
+                        <div *ngIf="f.password.errors.minlength"> {{passwordErrorMinlength}} </div>
+                    </div>
+                </div>
+                <div class="form-group form-check">
+                    <div class="row">
+                        <div class="col">
+                            <input type="checkbox" class="form-check-input" id="rememberpassword">
+                            <label class="form-check-label" for="rememberpassword"> {{rememberMe}}</label>
+                        </div>
+                        <div class="col text-right">
+                            <a href="">{{forgotPassword}}</a>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn loginButton btn-primary btn-block mt-2" (click)="onLogin()"> {{loginButton}}
+                    &nbsp; <i class="fas fa-sign-in-alt"></i> </button>
+            </form>
+        </div>
+    </div>
 </div>

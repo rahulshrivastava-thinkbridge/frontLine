@@ -1,3 +1,9 @@
+.body {
+  height: 90vh;
+  margin: 0;
+  background-image:url(D:\thinkbridge\froendend\frontLine\src\assets\PageBackground.jpg);
+}
+
 .headername {
     width: 106px;
     height: 22px;
@@ -11,8 +17,8 @@
 }
 
 .card {
-    height: 640px;
-    top: 20px;
+    height: 680px;
+    top: 25px;
     border: 1px solid #E5E5E5;
     box-sizing: border-box;
     border-radius: 5px;
@@ -30,29 +36,16 @@
     height: 100%;width:100%;
 }
 
-
-.btn:hover {
-    color: #fff
+::-webkit-input-placeholder {
+  color: black;
+  font-weight: 400;
 }
+.breadcrumb {
+  position: absolute;
+  background-color:transparent;
+  margin-left: 22px;
+ }
 
-.input-text:focus {
-    box-shadow: 0px 0px 0px;
-    border-color: blue;
-    outline: 0px
+ a {
+  text-decoration:none ;
 }
-
-.filterbutton {
-   width: 73px;
-   height: 32px;
-   left: 1114px;
-}
-
-.filtervalue {
-   width: 200px;
-   height: 32px;
-}
-
-.cancelButton {
-    margin: 4px 8px;
-}
-

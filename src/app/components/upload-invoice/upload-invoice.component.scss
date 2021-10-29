@@ -1,0 +1,279 @@
+// .uploadinvoicename {
+//     position: absolute;
+//     width: 236px;
+//     height: 43px;
+//     left: 702px;
+//     top: 90px;
+//     font-family: Tahoma;
+//     font-style: normal;
+//     font-weight: normal;
+//     font-size: 36px;
+//     line-height: 43px;
+//     display: flex;
+//     align-items: center;
+//     text-align: center;
+//     color: #333333;
+// }
+
+// .choicefile{
+//     position: absolute;
+// width: 502px;
+// height: 323px;
+// left: 539px;
+// top: 160px;
+// background: #F4F7FF;
+// border: 1px dashed #3070BA;
+// box-sizing: border-box;
+// border-radius: 5px;
+// }
+
+// .invoicetext{
+//     position: absolute;
+// width: 138px;
+// height: 22px;
+// left: 539px;
+// top: 510px;
+// font-family: Tahoma;
+// font-style: normal;
+// font-weight: normal;
+// font-size: 18px;
+// line-height: 22px;
+// display: flex;
+// align-items: center;
+// text-align: center;
+// color: #555555;
+// opacity: 0.7;
+// }
+
+// .showinvoice {
+//     position: absolute;
+// width: 502px;
+// height: 65px;
+// left: 539px;
+// top: 540px;
+// background: #FFFFFF;
+// border: 1px dashed #C1C2C2;
+// box-sizing: border-box;
+// border-radius: 5px;
+// }
+
+// .save {
+//     position: absolute;
+//     width: 121px;
+//     height: 44px;
+//     left: 722px;
+//     top: 632px;
+// }
+
+// .gotoinvoicelist {
+//     position: absolute;
+// width: 158px;
+// height: 22px;
+// left: 709px;
+// top: 700px;
+// font-family: Tahoma;
+// font-style: normal;
+// font-weight: normal;
+// font-size: 18px;
+// line-height: 22px;
+// display: flex;
+// align-items: center;
+// text-align: center;
+// text-decoration-line: underline;
+// color: #2A79F0;
+// opacity: 0.7;
+// }
+
+// input[type="file"] {
+//     display: none;
+// }
+
+// .custom-file-upload {
+//     border: 1px solid #ccc;
+//     display: inline-block;
+//     padding: 6px 12px;
+//     cursor: pointer;
+// }
+
+
+@import url('https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+.body {
+  font-family: 'Tahoma', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  overflow: hidden;
+  margin: 0;
+  background-image:url(D:\thinkbridge\froendend\frontLine\src\assets\PageBackground.jpg);
+}
+
+.dragArea{
+    border: 1px dashed #3070BA;
+    width: 502px;
+    height: 323px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #F4F7FF;
+}
+
+.dragArea header{
+    font-size: 18px;
+    color: #555555;    
+}
+
+.dragArea span{
+    font-size: 18px;
+    color: #555555;    
+    margin: 10px 0 15px 0;
+}
+
+.dragArea .icon{
+    font-size: 50px;
+    font-weight: 500;
+    color: #3070BA;
+    margin: 10px 0 15px 0;
+}
+
+button{
+    padding: 5px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+    color: #ffffff;
+    background: #2D78BC;
+    filter: drop-shadow(0px 8px 12px rgba(0, 0, 0, 0.25));
+    cursor: pointer;
+}
+
+.disabled{
+    background: #555555;
+}
+
+.invoiceUpload{
+    margin-top: 24px;
+    width: 502px;
+    box-sizing: border-box;
+}
+
+.invoiceFileUploaded{
+    min-height: 66px;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: row;
+    background: #FFFFFF;
+    border: 1px solid #C1C2C2;
+    box-sizing: border-box;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+.fileDetails{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fileDetails .file{
+    font-size: 32px;
+    color: #2D78BC;
+    padding: 8px 16px;
+}
+
+.fileDetails a{
+    font-size: 18px;
+    margin: 8px 98px;
+}
+
+.trash{
+    display: flex;
+    align-items: center;
+    margin: 10px 10px 10px auto;
+    padding: 0 10px;
+    border: 1px solid #555555;
+    box-sizing: border-box;
+    border-radius: 5px;
+    font-size: 18px;    
+    cursor: pointer;
+}
+
+.noInvoiceUpload{
+    margin-top: 24px;
+    width: 502px;
+    box-sizing: border-box;
+}
+
+.noInvoiceFileUploaded p{
+    color: #555555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    padding: 8px 16px;
+}
+
+.noInvoiceFileUploaded{
+    margin-top: 16px;
+    background: #FFFFFF;
+    border: 1px solid #C1C2C2;
+    box-sizing: border-box;
+    box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+}
+
+.loader {
+    border: 6px solid #d4d4d4;
+    border-radius: 50%;
+    border-top: 6px solid #2D78BC;
+    width: 50px;
+    height: 50px;
+    -webkit-animation: spin 1s linear infinite; /* Safari */
+    animation: spin 1s linear infinite;
+    margin-left: 45%;
+    margin-bottom: 18px;
+  }
+
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .file-upload-button {
+
+ 
+  &::after {
+    color: #fff;
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  input[type="file"] {
+       
+        left: 0;
+        opacity: 0;
+        position: absolute;
+        top: 0;
+    }
+}
+
+.file-info {
+  color: #999;
+  font-family: Lato;
+ 
+}

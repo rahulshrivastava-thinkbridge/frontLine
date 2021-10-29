@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { header } from '../constant'
+import { header } from '../constant' ;
 
 @Component({
   selector: 'app-header',

@@ -4,6 +4,7 @@ import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
 import { MenuModule } from '@ag-grid-enterprise/menu';
 import { InvoicingService } from 'src/app/services/invoicing.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { invoiceDetails } from '../shared/constant';
 
 @Component({
   selector: 'app-invoice-details',
@@ -11,9 +12,11 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./invoice-details.component.scss']
 })
 export class InvoiceDetailsComponent implements OnInit {
-
   @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv;
-
+  @HostListener('window:resize', ['$event'])
+  public onResize(event) {
+    this.setGridColSizeAsPerWidth();
+  }
   public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule]]
   public agGridOption: GridOptions;
   public rowData: any;
@@ -21,18 +24,112 @@ export class InvoiceDetailsComponent implements OnInit {
   public gridApi: any;
   public apiSuccessFull: boolean;
   public id: number;
+  public invoiceNumber: any;
+  public invoiceDate: string = new Date().toISOString();
+  public startDate: any;
+  public endDate: any;
+  public invoiceFormat: any;
+  public firmMatterId: any;
+  public firmClientMatterId: any;
+  public matterName: any;
+  public isFinal: any;
+  public client: any;
+  public firmClient: any;
+  public tags: any;
+  public ruleCode: any;
+  public serverSideStoreType;
+  public rowModelType;
+  public sortingOrder;
+  public columnDefs;
+  public defaultColDef;
+  public lastLength: any;
+  public filter: string;
+  public pageIndex: number;
+  public totalOld: any;
+  public total: any;
+  public change: any;
+  public discount: any;
+  public expenses: any;
+  public original: any;
+  public changeValue: any;
+  public final: any;
+  public dess: any;
+  public invoiceHeader: any;
+  public invoiceNumbers: any;
+  public invoiceDates: any;
+  public startDates: any;
+  public endDates: any;
+  public invoiceFormate: any;
+  public matterHeader: any;
+  public matterName1: any;
+  public matterName2: any;
+  public isFinals: any;
+  public clients: any;
+  public firmClients: any;
+  public tagss: any;
+  public ruleCodes: any;
+  public firmHeader: any;
+  public firmMatterId1: any;
+  public firmMatterId2: any;
+  public firmClientId: any;
+  public firmClientId2: any;
+  public orignal: any
+  public changes: any;
+  public finals: any;
+  public feess: any;
+  public expensess: any;
+  public discounts: any;
+  public totals: any;
 
-  public backToInvoicing() {
-    //this.router.navigateByUrl(['']);
-    this.router.navigate(
-      ['invoices']
-    );
+  constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoicingService) {
+    this.discount = 0;
+    this.expenses = 0;
+    this.invoiceHeader = invoiceDetails.INVOICE_HEADER;
+    this.invoiceNumbers = invoiceDetails.INVOICE_NUMBER;
+    this.invoiceDates = invoiceDetails.INVOICE_DATE;
+    this.startDates = invoiceDetails.START_DATE;
+    this.endDates = invoiceDetails.END_DATE;
+    this.invoiceFormate = invoiceDetails.INVOICE_FORMATE;
+    this.matterHeader = invoiceDetails.MATTER_DETAILS_HEADER;
+    this.matterName1 = invoiceDetails.MATTER_NAME;
+    this.matterName2 = invoiceDetails.MATTER_NAMES;
+    this.isFinals = invoiceDetails.IS_FINAL;
+    this.clients = invoiceDetails.CLIENT;
+    this.firmClients = invoiceDetails.FIRM_CLIENT;
+    this.tagss = invoiceDetails.TAGS;
+    this.ruleCodes = invoiceDetails.RULE_CODE;
+    this.firmHeader = invoiceDetails.FIRM_DETAILS_HEADER;
+    this.firmMatterId1 = invoiceDetails.FIRM_MATTER_ID;
+    this.firmMatterId2 = invoiceDetails.FIRM_MATTER_ID2;
+    this.firmClientId = invoiceDetails.FIRM_CLIENT_ID;
+    this.firmClientId2 = invoiceDetails.FIRM_CLIENT_ID2;
+    this.orignal = invoiceDetails.ORIGINAL;
+    this.changes = invoiceDetails.CHANGE;
+    this.finals = invoiceDetails.FINAL;
+    this.feess = invoiceDetails.FEES;
+    this.expensess = invoiceDetails.EXPENSES;
+    this.discounts = invoiceDetails.DISCOUNTS;
+    this.totals = invoiceDetails.TOTAL;
+  }
+
+  ngOnInit(): void {
+    this.getGridConfig();
+    this.getData();
+    const invoiceDetails = localStorage.getItem('invoicedetail');
+    const invoiceData = JSON.parse(invoiceDetails);
+    this.invoiceNumber = invoiceData.InvoiceNumber;
+    this.invoiceDate = this.myDateParser(invoiceData.InvoiceDate);
+    this.firmMatterId = invoiceData.FirmMatterId;
+    this.firmClientMatterId = invoiceData.ClientMatterId;
+    this.matterName = invoiceData.MatterName;
+    this.client = invoiceData.ClientName;
+    this.firmClient = invoiceData.LawFirmName;
   }
 
   private getGridConfig() {
     let vm = this
     this.agGridOption = {
-      defaultColDef: { flex: 1, minWidth: 100, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true },
+      defaultColDef: { flex: 1, minWidth: 100, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, },
       rowSelection: 'multiple',
       enableMultiRowDragging: true,
       suppressRowClickSelection: true,
@@ -57,84 +154,83 @@ export class InvoiceDetailsComponent implements OnInit {
     }
 
     function onModelUpdated(params) {
-
       if (!vm.apiSuccessFull)
         return;
-
       if (params.api.getDisplayedRowCount()) params.api.hideOverlay();
       else params.api.showNoRowsOverlay();
-
     }
+  }
 
+  private setFilter(event: any) {
+    console.log('data==>', event);
+    this.filter = ''
   }
 
   private getColumnDefinition() {
     return [
       {
-        headerName: "File Item #",
-        field: 'FileItemNumber'
+        headerName: "Status",
+        field: 'LineItemStatus'
       },
-      // {
-      //   headerName: 'Invoice Line Item #',
-      //   field     : 'Id',
-      //   tooltipValueGetter (params) {
-      //     return params.value;
-      //   },
-      //   sort : 'asc',
-      //   maxWidth: 200
-      // },
       {
-        headerName: 'Charge Date',
-        field: 'ChargeDate',
+        headerName: "Rule",
+        field: 'Rule'
+      },
+      {
+        headerName: "Rule Category",
+        field: 'RuleCategory'
+      },
+      {
+        headerName: "Units",
+        field: 'Units'
+      },
+      {
+        headerName: "Rate",
+        field: 'Rate'
+      },
+      {
+        headerName: "Agreed Rate",
+        field: 'AgreedRate'
+      },
+      {
+        headerName: "Discounts",
+        field: 'Discounts'
+      },
+      {
+        headerName: "Total",
+        field: 'Total'
+      },
+      {
+        headerName: "Tags",
+        field: 'Tags'
+      },
+      {
+        headerName: 'Date',
+        field: 'Date',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
         minWidth: 180
       },
-      // {
-      //   headerName: 'UploadedDate',
-      //   field     : 'UploadedDate',
-      //   filter:'agDateColumnFilter',
-      //   comparator: this.dateComparator,
-      // },
       {
-        headerName: 'Charge Desciption',
-        field: 'ChargeDesciption'
+        headerName: "Task",
+        field: 'Task'
       },
       {
-        headerName: 'Task Code',
-        field: 'TaskCode'
+        headerName: "Activity",
+        field: 'Activity'
       },
       {
-        headerName: 'Units',
-        field: 'Units'
+        headerName: "Timekeeper Initial",
+        field: 'TimekeeperInitial'
       },
       {
-        headerName: 'Rate',
-        field: 'Rate'
+        headerName: 'Description',
+        field: 'Description',
       },
       {
-        headerName: 'Total Amount',
-        field: 'TotalAmount'
+        headerName: 'ML Preparation Note',
+        field: ' '
       },
-
-      {
-        headerName: 'ML Approval Status',
-        field: 'MLApprovalStatus'
-      },
-
-      {
-        headerName: 'ML Preparation Notes',
-        field: 'MLPreparationNotes',
-      },
-
-      // {
-      //   headerName           : 'Action',
-      //   cellRendererFramework: ActionForEditDeleteComponent,
-      //   sortable             : false,
-      //   filter               : false,
-      //   cellRendererParams   : {edit : this.fa.faEdit, delete: this.fa.faTrashAlt, isStandardAg: 'ComputationName'},
-      //   minWidth             : 140
-      // }
     ]
   }
 
@@ -152,6 +248,7 @@ export class InvoiceDetailsComponent implements OnInit {
     }
     return date1Number - date2Number;
   }
+
   private monthToComparableNumber(date) {
     if (date === undefined || date === null || date.length !== 10) {
       return null;
@@ -165,39 +262,33 @@ export class InvoiceDetailsComponent implements OnInit {
 
   private getData() {
     this.id = this.route.snapshot.queryParams.Id
-    //Uncomment the line from 137 to 142
-    this.invoicingService.getInvoiceDetail(this.id)
+    this.invoicingService.getInvoiceDetails(this.id)
       .subscribe((response) => {
         this.data = response;
-        for (let i = 0; i < this.data.length; i++) {
-          this.data[i]["MLApprovalStatus"] = 'Approved', this.data[i]["MLPreparationNotes"] = 'Demo Notes';
-        }
         this.rowData = this.data;
         this.setGridColSizeAsPerWidth();
         this.apiSuccessFull = true;
+        let sum = 0;
+        for (var i in this.data) {
+          sum += parseFloat(this.data[i].TotalOld);
+          this.totalOld = sum;
+        }
+        let old = 0;
+        for (var i in this.data) {
+          old += parseFloat(this.data[i].Total);
+          this.total = old;
+        }
+        this.change = this.totalOld - this.total;
+        let des = 0;
+        for (var i in this.data) {
+          des += parseFloat(this.data[i].Discounts);
+          this.dess = des;
+        }
+        this.discount = this.dess
+        this.original = this.totalOld + this.discount + this.expenses;
+        this.changeValue = this.change + this.discount + this.expenses;
+        this.final = this.total + this.discount + this.expenses;
       })
-
-    //comment the ine from 145 to 164
-    // this.rowData = [
-    //   {
-    //     "Id": 586,
-    //     "InvoiceClientId": 586,
-    //     "UploadedDate": "08/11/2012",
-    //     "InvoiceCode": "458502",
-    //     "InvoiceDate": "07/01/2012",
-    //     "Description": "Services Rendered",
-    //     "EbillerStatus": "Activated",
-    //   },
-    //   {
-    //     "Id": 587,
-    //     "InvoiceClientId": 587,
-    //     "UploadedDate": "02/11/2012",
-    //     "InvoiceCode": "458502",
-    //     "InvoiceDate": "07/11/2012",
-    //     "Description": "Services Rendered",
-    //     "EbillerStatus": "Activated",
-    //   }
-    // ]
   }
 
   private autoSizeAll() {
@@ -222,20 +313,11 @@ export class InvoiceDetailsComponent implements OnInit {
     }, 1);
   }
 
-  @HostListener('window:resize', ['$event'])
-  public onResize(event) {
-    this.setGridColSizeAsPerWidth();
-  }
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private invoicingService: InvoicingService
-  ) { }
-
-  ngOnInit(): void {
-    this.getGridConfig();
-    this.getData();
+  myDateParser(dateStr: string): string {
+    let date = dateStr.substring(0, 13);
+    let validDate = date
+    console.log(validDate)
+    return validDate
   }
 
 }
