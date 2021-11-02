@@ -29,5 +29,9 @@ export class InvoicingService {
     return this.http.get('https://frontlineebillingassistantapi.azurewebsites.net/api/invoicelineitems/listing', { params: { Id: InvoiceID } });
   }
 
+  getInvoiceDataDetails(InvoiceID: any) {
+    return this.http.get('https://frontlineebillingassistantapi.azurewebsites.net/api/invoice/details', { params: { Id: InvoiceID } });
+  }
+
 }
 

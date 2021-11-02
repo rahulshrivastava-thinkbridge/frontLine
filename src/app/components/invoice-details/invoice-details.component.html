@@ -1,11 +1,9 @@
 <app-header></app-header>
-
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="#">Home</a></li>
-    <li class="breadcrumb-item"><a href="/invoices">Invoice List</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Invoice Details</li>
+    <li class="breadcrumb-item"><a href="/invoices"> {{home}} </a></li>
+    <li class="breadcrumb-item"><a href="/invoices">{{headerInvoicelist}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{headerInvoiceDetails}}</li>
 </ol>
-
 <div class="body">
     <div class="card invoiceDetail">
         <div class="header">
@@ -22,9 +20,9 @@
             <div class="col-md-6 fontsize">
                 <div class="mt-2"><span>{{invoiceNumber}}</span></div>
                 <div class="mt-2"><span>{{invoiceDate | date : "dd/MM/y" }} </span></div>
-                <div class="mt-2"><span>Start </span></div>
-                <div class="mt-2"><span>End </span></div>
-                <div class="mt-2"><span>Invoice </span></div>
+                <div class="mt-2"><span> {{startDate | date : "dd/MM/y" }} </span></div>
+                <div class="mt-2"><span>{{endDate | date : "dd/MM/y" }} </span></div>
+                <div class="mt-2"><span>{{invoiceFormat}} </span></div>
             </div>
         </div>
     </div>
@@ -74,7 +72,7 @@
         <div class="row ml-2 fontsize">
             <div class="col-md-4 ">{{isFinals}}
             </div>
-            <div class="col-md-8">ketan</div>
+            <div class="col-md-8"> {{isFinal}} </div>
         </div>
         <div class="row ml-2 fontsize">
             <div class="col-md-4">{{clients}}
@@ -89,12 +87,12 @@
         <div class="row ml-2 fontsize">
             <div class="col-md-4 ">{{ tagss }}
             </div>
-            <div class="col-md-8">23234423</div>
+            <div class="col-md-8"> {{tags}}</div>
         </div>
         <div class="row ml-2 fontsize">
             <div class="col-md-4 "> {{ ruleCodes }}
             </div>
-            <div class="col-md-8">standerd</div>
+            <div class="col-md-8"> {{ruleCode}} </div>
         </div>
     </div>
     <div class="card finalTable">
@@ -138,13 +136,14 @@
         </div>
     </div>
     <div class="card list mt-2">
-        <div class="headername my-2"> Invoice Details </div>
+        <div class="headername my-2"> {{invoiceHeader}} </div>
         <div class="border-top mx-3 mt-2"></div>
         <div class="row">
             <div class="col-12">
                 <div class="customHeights">
                     <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData"
-                        style="height: 100%;width:100%" class="agGridHorizontalScroll ag-theme-material grid">
+                        [singleClickEdit]="true" style="height: 100%;width:100%"
+                        class="agGridHorizontalScroll ag-theme-material grid">
                     </ag-grid-angular>
                 </div>
             </div>

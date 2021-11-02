@@ -5,8 +5,7 @@ import { MenuModule } from '@ag-grid-enterprise/menu';
 import { InvoicingService } from 'src/app/services/invoicing.service';
 import { InvoiceCodeComponentComponent } from 'src/app/agGridComponents/invoice-code-component/invoice-code-component.component';
 import { Router } from '@angular/router';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { invoiceList } from '../shared/constant';
+import { invoiceList, casecading } from '../shared/constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ServerSideRowModelModule, ColumnsToolPanelModule } from '@ag-grid-enterprise/all-modules';
 
@@ -38,9 +37,13 @@ export class InvoiceListComponent implements OnInit {
   public lastLength: any;
   public chekindex: boolean;
   private columnTypes;
+  public home: any;
+  public headerInvoicelist: any;
 
   constructor(private router: Router, private invoicingService: InvoicingService, private formBuilder: FormBuilder,) {
     this.invoiceList = invoiceList.INVOICE_LIST;
+    this.home = casecading.HOME;
+    this.headerInvoicelist = casecading.INVOICE_LIST;
     this.rowModelType = 'serverSide';
     this.serverSideStoreType = 'partial';
   }
@@ -54,7 +57,6 @@ export class InvoiceListComponent implements OnInit {
   }
 
   public sendMsg(text, data) {
-    console.log('id==>', data);
     localStorage.setItem('invoicedetail', JSON.stringify(data))
     this.router.navigateByUrl('/invoicedetail/?Id=' + data.InvoiceId);
   }
@@ -143,24 +145,16 @@ export class InvoiceListComponent implements OnInit {
               this.lastLength = data.lastRow;
               // this.lastLength = data.slice(request.startRow, request.endRow);
             }
-
             params.success({
               rowData: data,
               rowCount: this.lastLength,
             });
-            // params.success({
-            //   rowCount: data.length,
-            //   rowData: data,
-            // });
-            // rowCount: data.data?.totalCount || 0,
-            // rowData : data.data?.item || []
           });
       }
     }
   }
 
   private setFilter(event: any) {
-    console.log('data==>', event);
     this.filter = ''
     if (event.InvoiceNumber) {
       this.filterData = event.InvoiceNumber.filter;
@@ -318,7 +312,7 @@ export class InvoiceListComponent implements OnInit {
       {
         headerName: 'Client',
         field: 'ClientName',
-          filter: 'agTextColumnFilter',
+        filter: 'agTextColumnFilter',
       },
       {
         headerName: 'Firm Client',

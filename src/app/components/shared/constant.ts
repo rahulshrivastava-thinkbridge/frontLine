@@ -49,3 +49,9 @@ export const invoiceDetails = {
     TOTAL: ' Total',
 }
 
+export const casecading = {
+    HOME: 'Home',
+    INVOICE_LIST: 'Invoice List ',
+    INVOICE_DETAILS: 'Invoice Details',
+}
+

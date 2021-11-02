@@ -25,7 +25,6 @@ export class HttpInterceptorInterceptor implements HttpInterceptor {
           'Content-Type': 'application/json; charset=utf-8'
         }
       }); 
-
     }
     return next.handle(request);
   }

@@ -1,8 +1,8 @@
 <app-header></app-header>
 <div class="body">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="#">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Invoice List</li>
+    <li class="breadcrumb-item"><a href="/invoices"> {{home}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page"> {{headerInvoicelist}}</li>
   </ol>
   <div class="card">
     <div class="headername my-2"> {{invoiceList}} </div>
@@ -11,9 +11,8 @@
       <div class="col-12">
         <div class="customHeight">
           <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData" ag-grid="gridOptions"
-            [sortingOrder]="sortingOrder" [defaultColDef]="defaultColDef" [rowModelType]="rowModelType" 
+            [sortingOrder]="sortingOrder" [defaultColDef]="defaultColDef" [rowModelType]="rowModelType"
             [serverSideStoreType]="serverSideStoreType" (gridReady)="onGridReady($event)"
-   
             class="agGridHorizontalScroll ag-theme-material grid">
           </ag-grid-angular>
         </div>

@@ -4,7 +4,7 @@ import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
 import { MenuModule } from '@ag-grid-enterprise/menu';
 import { InvoicingService } from 'src/app/services/invoicing.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { invoiceDetails } from '../shared/constant';
+import { invoiceDetails, casecading } from '../shared/constant';
 
 @Component({
   selector: 'app-invoice-details',
@@ -26,8 +26,8 @@ export class InvoiceDetailsComponent implements OnInit {
   public id: number;
   public invoiceNumber: any;
   public invoiceDate: string = new Date().toISOString();
-  public startDate: any;
-  public endDate: any;
+  public startDate: string = new Date().toISOString();;
+  public endDate: string = new Date().toISOString();;
   public invoiceFormat: any;
   public firmMatterId: any;
   public firmClientMatterId: any;
@@ -80,6 +80,10 @@ export class InvoiceDetailsComponent implements OnInit {
   public expensess: any;
   public discounts: any;
   public totals: any;
+  public nullValueSet: any;
+  public home: any;
+  public headerInvoicelist: any;
+  public headerInvoiceDetails: any;
 
   constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoicingService) {
     this.discount = 0;
@@ -110,6 +114,10 @@ export class InvoiceDetailsComponent implements OnInit {
     this.expensess = invoiceDetails.EXPENSES;
     this.discounts = invoiceDetails.DISCOUNTS;
     this.totals = invoiceDetails.TOTAL;
+    this.nullValueSet = 'NA';
+    this.home = casecading.HOME;
+    this.headerInvoicelist = casecading.INVOICE_LIST;
+    this.headerInvoiceDetails = casecading.INVOICE_DETAILS;
   }
 
   ngOnInit(): void {
@@ -117,19 +125,19 @@ export class InvoiceDetailsComponent implements OnInit {
     this.getData();
     const invoiceDetails = localStorage.getItem('invoicedetail');
     const invoiceData = JSON.parse(invoiceDetails);
-    this.invoiceNumber = invoiceData.InvoiceNumber;
+    this.invoiceNumber = invoiceData.InvoiceNumber || this.nullValueSet;
     this.invoiceDate = this.myDateParser(invoiceData.InvoiceDate);
-    this.firmMatterId = invoiceData.FirmMatterId;
-    this.firmClientMatterId = invoiceData.ClientMatterId;
-    this.matterName = invoiceData.MatterName;
-    this.client = invoiceData.ClientName;
-    this.firmClient = invoiceData.LawFirmName;
+    this.firmMatterId = invoiceData.FirmMatterId || this.nullValueSet;
+    this.firmClientMatterId = invoiceData.ClientMatterId || this.nullValueSet;
+    this.matterName = invoiceData.MatterName || this.nullValueSet;
+    this.client = invoiceData.ClientName || this.nullValueSet;
+    this.firmClient = invoiceData.LawFirmName || this.nullValueSet;
   }
 
   private getGridConfig() {
     let vm = this
     this.agGridOption = {
-      defaultColDef: { flex: 1, minWidth: 100, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, },
+      defaultColDef: { flex: 1, minWidth: 100, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true, },
       rowSelection: 'multiple',
       enableMultiRowDragging: true,
       suppressRowClickSelection: true,
@@ -143,14 +151,12 @@ export class InvoiceDetailsComponent implements OnInit {
       unSortIcon: true,
       context: { componentParent: this },
       suppressContextMenu: true,
+      getRowNodeId: function (data) {
+        return data.id;
+      },
       //noRowsOverlayComponentFramework: NoRowOverlayComponent,
       noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length ? 'No matching records found for the required search' : 'No invoice details to display' },
-      onGridReady,
       onModelUpdated,
-    }
-
-    function onGridReady(params) {
-      vm.gridApi = params;
     }
 
     function onModelUpdated(params) {
@@ -162,15 +168,30 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   private setFilter(event: any) {
-    console.log('data==>', event);
     this.filter = ''
   }
 
   private getColumnDefinition() {
+    function ragRenderer(params) {
+      return '<span class="rag-element">' + params.value + '</span>';
+    }
+    var ragCellClassRules = {
+      'rag-green-outer': function (params) {
+        return params.value == 'Active';
+      },
+      'rag-amber-outer': function (params) {
+        return params.value == 11.00;
+      },
+      'rag-red-outer': function (params) {
+        return params.value === 2000;
+      },
+    };
     return [
       {
         headerName: "Status",
-        field: 'LineItemStatus'
+        field: 'LineItemStatus',
+        // cellClassRules: ragCellClassRules,
+        //   cellRenderer: ragRenderer,
       },
       {
         headerName: "Rule",
@@ -198,8 +219,9 @@ export class InvoiceDetailsComponent implements OnInit {
       },
       {
         headerName: "Total",
-        field: 'Total'
-      },
+        field: 'Total',
+
+      },  // cellStyle: params => params.value == 22.00 ? { color: 'red' } : { color: 'green' }
       {
         headerName: "Tags",
         field: 'Tags'
@@ -234,6 +256,10 @@ export class InvoiceDetailsComponent implements OnInit {
     ]
   }
 
+  ragRenderer(params) {
+    return '<span class="rag-element">' + params.value + '</span>';
+  }
+
   private dateComparator(date1, date2) {
     var date1Number = this.monthToComparableNumber(date1);
     var date2Number = this.monthToComparableNumber(date2);
@@ -261,33 +287,44 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   private getData() {
-    this.id = this.route.snapshot.queryParams.Id
-    this.invoicingService.getInvoiceDetails(this.id)
+    this.id = this.route.snapshot.queryParams.Id;
+    this.invoicingService.getInvoiceDataDetails(this.id)
       .subscribe((response) => {
-        this.data = response;
-        this.rowData = this.data;
-        this.setGridColSizeAsPerWidth();
-        this.apiSuccessFull = true;
-        let sum = 0;
-        for (var i in this.data) {
-          sum += parseFloat(this.data[i].TotalOld);
-          this.totalOld = sum;
-        }
-        let old = 0;
-        for (var i in this.data) {
-          old += parseFloat(this.data[i].Total);
-          this.total = old;
-        }
-        this.change = this.totalOld - this.total;
-        let des = 0;
-        for (var i in this.data) {
-          des += parseFloat(this.data[i].Discounts);
-          this.dess = des;
-        }
-        this.discount = this.dess
-        this.original = this.totalOld + this.discount + this.expenses;
-        this.changeValue = this.change + this.discount + this.expenses;
-        this.final = this.total + this.discount + this.expenses;
+        this.startDate = this.myDateParser(response[0].StartDate) || this.nullValueSet;
+        this.endDate = this.myDateParser(response[0].EndDate) || this.nullValueSet;
+        this.invoiceFormat = response[0].InvoiceFormat || this.nullValueSet;
+        this.isFinal = response[0].IsFinal || this.nullValueSet;
+        this.tags = response[0].Tags || this.nullValueSet;
+        this.ruleCode = response[0].RuleCode || this.nullValueSet;
+
+        this.invoicingService.getInvoiceDetails(this.id)
+          .subscribe((response) => {
+            this.data = response;
+            this.rowData = this.data;
+            this.setGridColSizeAsPerWidth();
+            this.apiSuccessFull = true;
+            let sum = 0;
+            for (var i in this.data) {
+              sum += parseFloat(this.data[i].TotalOld);
+            }
+            this.totalOld = sum || 0;
+
+            let old = 0;
+            for (var i in this.data) {
+              old += parseFloat(this.data[i].Total);
+            }
+            this.total = old || 0;
+            this.change = this.totalOld - this.total || 0;
+            let des = 0;
+            for (var i in this.data) {
+              des += parseFloat(this.data[i].Discounts);
+              this.dess = des;
+            }
+            this.discount = this.dess || 0;
+            this.original = this.totalOld + this.discount + this.expenses || 0;
+            this.changeValue = this.change + this.discount + this.expenses || 0;
+            this.final = this.total + this.discount + this.expenses || 0;
+          })
       })
   }
 
@@ -316,7 +353,6 @@ export class InvoiceDetailsComponent implements OnInit {
   myDateParser(dateStr: string): string {
     let date = dateStr.substring(0, 13);
     let validDate = date
-    console.log(validDate)
     return validDate
   }
 

@@ -1,80 +1,3 @@
-// :root {
-//   --left-bg-color: rgba(43,43,43,0.8);
-// }
-
-// * {
-//   box-sizing: border-box;
-// }
-
-// .body {
-//   font-family: 'Roboto', sans-serif;
-//   font-size: 14px;
-//   height: 100vh;
-//   overflow: hidden;
-//   margin: 0;
-// }
-
-// .logo {
-//   position: absolute;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   left: 50%;
-//   top: 40%;
-//   transform: translateX(-50%);
-//   width: 15rem;
-//   padding: 1.5rem;
-// }
-
-// .loginContainer {
-//   position: relative;
-//   width: 100%;
-//   height: 100%;
-//   background: url(D:\thinkbridge\froendend\frontLine\src\assets\bg.jpg);
-// }
-
-// .split {
-//   position: absolute;
-//   width: 60%;
-//   height: 100%;
-//   overflow: hidden;
-// }
-
-// .split.left {
-//   left: 0;
-//   background: url(D:\thinkbridge\froendend\frontLine\src\assets\ps.jpg);
-//   background-repeat: no-repeat;
-//   background-size: cover;
-// }
-
-// .split.left::before {
-//   content: '';
-//   position: absolute;
-//   width: 100%;
-//   height: 100%;
-//   background-color: rgba(43,43,43,0.8);
-
-// }
-
-// .right {
-//   position: absolute;
-//   align-items: center;
-//   justify-content: center;
-//   left: 50%;
-//   top: 30%;    
-// }
-
-// .split.right {
-//   right: 0;
-//   padding: 0 20%;
-// }
-
-// @media (max-width: 800px) {
-//   h2 {
-//     top: 30%;
-//   }
-// }
-
 * {
   box-sizing: border-box;
 }
@@ -174,5 +97,5 @@ h2{
     background: linear-gradient(264.93deg, #3DBC83 -32.62%, #31BD9A -0.47%, #46C4C2 32.78%, #57C9D7 58.59%, #0DB0EE 94.25%, #0DB0EE 103.23%);
     border: none;
     text-transform: uppercase;
-    }
+ }
 

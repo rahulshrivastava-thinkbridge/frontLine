@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { stringify } from 'querystring';
 import { LoginService } from '../../services/login.service';
 import { loginForm } from '../shared/constant';
 import Swal from 'sweetalert2';
@@ -78,7 +77,7 @@ export class LoginComponent implements OnInit {
         if (data.token) {
           Swal.fire(
             'Good job!',
-            'Welcome aboard ' +  response.firstName + ' ' + response.lastName + '!',
+            'Welcome aboard ' + response.firstName + ' ' + response.lastName + '!',
             'success'
           )
           localStorage.setItem('firstName', response.firstName)
