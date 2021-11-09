@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/1c154f21-b020-41be-9afb-22364fde45a0/resourceGroups/FrontLine-DataAnalysis/providers/Microsoft.Web/sites/ebillingassistant",
+    "appService.deploySubpath": "dist\\frontlineeBillingAssistantApp"
+}
