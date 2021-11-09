@@ -356,4 +356,8 @@ export class InvoiceDetailsComponent implements OnInit {
     return validDate
   }
 
+  onBack(){
+    this.router.navigate(['/invoices']);
+  }
+
 }
