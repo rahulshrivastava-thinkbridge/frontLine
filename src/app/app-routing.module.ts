@@ -21,7 +21,8 @@ const routes: Routes = [
   {
     path: 'uploadinvoices', component: UploadInvoiceComponent, canActivate: [AuthGuard]
   },
-  { path: 'invoicedetail/:id', component: InvoiceDetailsComponent, canActivate: [AuthGuard], data: { breadcrumb: 'invoicedetails' } },
+ // { path: 'invoicedetail', component: InvoiceDetailsComponent, canActivate: [AuthGuard], data: { breadcrumb: 'invoicedetails' } },
+ { path: 'invoicedetail/:id', component: InvoiceDetailsComponent, canActivate: [AuthGuard], data: { breadcrumb: 'invoicedetails' } },
 ]
 
 @NgModule({

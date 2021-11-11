@@ -376,6 +376,10 @@ export class InvoiceListComponent implements OnInit {
         this.gridApi.api.sizeColumnsToFit();
     }, 1);
   }
+
+  onBack(){
+    this.router.navigate(['/invoices']);
+  }
 }
 
 function sortAndFilter(response: Object, sortModel: any, filterModel: any) {

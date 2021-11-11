@@ -1,7 +1,7 @@
 <app-header></app-header>
 <div class="body">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/invoices"> {{home}}</a></li>
+    <li class="breadcrumb-item" (click)="onBack()" style="color: blue; cursor: pointer;">{{home}}</li>
     <li class="breadcrumb-item active" aria-current="page"> {{headerInvoicelist}}</li>
   </ol>
   <div class="card">

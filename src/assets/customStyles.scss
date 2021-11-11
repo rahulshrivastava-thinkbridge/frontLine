@@ -16,6 +16,13 @@ a {
 }
 
 .customHeights {
-    height: calc(50vh - 40px);
+    height: calc(46vh - 40px);
     margin: 5px 10px;
+}
+@media (min-width: 1650px) {    
+
+    .customHeights {
+        height: calc(55vh - 40px);
+        margin: 5px 10px;
+    }
 }
