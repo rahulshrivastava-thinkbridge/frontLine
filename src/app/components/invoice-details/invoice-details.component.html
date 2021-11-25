@@ -308,10 +308,17 @@
             <div class="col-12">
                 <div class="customHeights">
                     <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData"
-                        [singleClickEdit]="true" class="agGridHorizontalScroll ag-theme-material grid">
+                    (cellClicked)="onCellClicked($event)" (gridReady)="onGridReady($event)" [singleClickEdit]="true" class="agGridHorizontalScroll ag-theme-material grid">
                     </ag-grid-angular>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="saveButtons">
+        <button type="button" class="btn btn-primary btn-sm" style="background-color: #2D76BC;"
+            (click)="updateTable()">Save 
+            <!-- <i class="fas fa-save"></i> -->
+            <i class="fa fa-save" style="margin-left: 5px;"></i>
+         </button>
     </div>
 </div>

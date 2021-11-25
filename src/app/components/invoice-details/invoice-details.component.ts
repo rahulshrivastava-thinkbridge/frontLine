@@ -5,6 +5,8 @@ import { MenuModule } from '@ag-grid-enterprise/menu';
 import { InvoicingService } from 'src/app/services/invoicing.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { invoiceDetails, casecading } from '../shared/constant';
+import { DatePipe } from '@angular/common';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-invoice-details',
@@ -13,6 +15,8 @@ import { invoiceDetails, casecading } from '../shared/constant';
 })
 export class InvoiceDetailsComponent implements OnInit {
   @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv;
+  editingRowIndex: any;
+  gridColumnApi: any;
   @HostListener('window:resize', ['$event'])
   public onResize(event) {
     this.setGridColSizeAsPerWidth();
@@ -84,6 +88,7 @@ export class InvoiceDetailsComponent implements OnInit {
   public home: any;
   public headerInvoicelist: any;
   public headerInvoiceDetails: any;
+  pipe = new DatePipe('en-US');
 
   constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoicingService) {
     this.discount = 0;
@@ -137,7 +142,7 @@ export class InvoiceDetailsComponent implements OnInit {
   private getGridConfig() {
     let vm = this
     this.agGridOption = {
-      defaultColDef: { flex: 1, minWidth: 100, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true, },
+      defaultColDef: { flex: 1, minWidth: 150, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true, },
       rowSelection: 'multiple',
       enableMultiRowDragging: true,
       suppressRowClickSelection: true,
@@ -165,6 +170,12 @@ export class InvoiceDetailsComponent implements OnInit {
       if (params.api.getDisplayedRowCount()) params.api.hideOverlay();
       else params.api.showNoRowsOverlay();
     }
+  }
+
+  onGridReady(params: any) {
+    this.gridApi = params.api;
+    this.gridColumnApi = params.columnApi;
+    params.api.sizeColumnsToFit();
   }
 
   private setFilter(event: any) {
@@ -248,10 +259,14 @@ export class InvoiceDetailsComponent implements OnInit {
       {
         headerName: 'Description',
         field: 'Description',
+        minWidth: 400,
+        cellEditor: 'agLargeTextCellEditor',
       },
       {
         headerName: 'ML Preparation Note',
-        field: ' '
+        field: 'MLPreparationNotes',
+        minWidth: 300,
+        cellEditor: 'agLargeTextCellEditor',
       },
     ]
   }
@@ -286,6 +301,55 @@ export class InvoiceDetailsComponent implements OnInit {
     return result;
   }
 
+  onCellClicked($event: any) {
+    // check whether the current row is already opened in edit or not
+    if (this.editingRowIndex != $event.rowIndex) {
+      console.log($event);
+      $event.api.startEditingCell({
+        rowIndex: $event.rowIndex,
+        colKey: $event.column.colId
+      });
+      this.editingRowIndex = $event.rowIndex;
+    }
+  }
+
+  updateTable() {
+    this.gridApi.stopEditing();
+    for (let i = 0; i < this.data.length; i++) {
+      if (this.data[i].AgreedRate == null) {
+        this.data[i].AgreedRate = ''
+      }
+      if (this.data[i].DiscountCreditCategory == null && this.data[i].DiscountCreditCategory == '' && this.data[i].DiscountCreditCategory == undefined) {
+        this.data[i].DiscountCreditCategory = null;
+      }
+    }
+    const subscription = this.invoicingService.invoiceLineitemsUpdate(JSON.stringify(this.data))
+      .subscribe((response) => {
+
+
+      }, (error) => {
+        console.log('error==>', error.error.text);
+        if (error.error.text == 'Success') {
+          Swal.fire(
+            ' ',
+            'modified successfully!',
+            'success'
+          )
+          this.getData();
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: ' ',
+            text: 'error!',
+          })
+        }
+      }, () => {
+      }).add(() => {
+        subscription.unsubscribe();
+      })
+
+  }
+
   private getData() {
     this.id = this.route.snapshot.queryParams.Id;
     this.invoicingService.getInvoiceDataDetails(this.id)
@@ -300,6 +364,12 @@ export class InvoiceDetailsComponent implements OnInit {
         this.invoicingService.getInvoiceDetails(this.id)
           .subscribe((response) => {
             this.data = response;
+            for (let i = 0; i < this.data.length; i++) {
+              let date = this.data[i].Date;
+              const now = this.myDateParser(date);
+              const Date = this.pipe.transform(now, 'MM/dd/y');
+              this.data[i]["Date"] = Date;
+            }
             this.rowData = this.data;
             this.setGridColSizeAsPerWidth();
             this.apiSuccessFull = true;
@@ -329,22 +399,28 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   private autoSizeAll() {
-    let allColumnIds = [];
+    let allColumnIds: any[] = [];
     let gridColumnApi = this.gridApi.columnApi
-    gridColumnApi.getAllColumns().forEach(function (column) {
-      allColumnIds.push(column.colId);
-    });
-    gridColumnApi.autoSizeColumns(allColumnIds);
+    if (gridColumnApi) {
+      gridColumnApi.getAllColumns().forEach(function (column: any) {
+        allColumnIds.push(column.colId);
+      });
+      gridColumnApi.autoSizeColumns(allColumnIds);
+    }
+
   }
 
   private setGridColSizeAsPerWidth() {
     setTimeout(() => {
       this.autoSizeAll();
       let width = 0;
-      let gridColumnApi = this.gridApi.columnApi
-      gridColumnApi.getAllColumns().forEach(function (column) {
-        width = width + column.getActualWidth();
-      });
+      let gridColumnApi = this.gridApi.columnApi;
+      if (gridColumnApi) {
+        gridColumnApi.getAllColumns().forEach(function (column: any) {
+          width = width + column.getActualWidth();
+        });
+      }
+
       if (this.agGridDiv && width < this.agGridDiv.nativeElement.offsetWidth)
         this.gridApi.api.sizeColumnsToFit();
     }, 1);
@@ -356,7 +432,7 @@ export class InvoiceDetailsComponent implements OnInit {
     return validDate
   }
 
-  onBack(){
+  onBack() {
     this.router.navigate(['/invoices']);
   }
 

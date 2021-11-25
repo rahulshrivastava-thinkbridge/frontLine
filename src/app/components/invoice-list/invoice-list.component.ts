@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { invoiceList, casecading } from '../shared/constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ServerSideRowModelModule, ColumnsToolPanelModule } from '@ag-grid-enterprise/all-modules';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-invoice-list',
@@ -15,8 +16,11 @@ import { ServerSideRowModelModule, ColumnsToolPanelModule } from '@ag-grid-enter
   styleUrls: ['./invoice-list.component.scss']
 })
 export class InvoiceListComponent implements OnInit {
+  @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv: any;
   @HostListener('window:resize', ['$event'])
-  @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv;
+  public onResize(event: any) {
+    this.setGridColSizeAsPerWidth();
+  }
   public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule, ServerSideRowModelModule, ColumnsToolPanelModule]]
   public agGridOption: GridOptions;
   public rowData: any;
@@ -50,10 +54,6 @@ export class InvoiceListComponent implements OnInit {
 
   ngOnInit(): void {
     this.getGridConfig();
-  }
-
-  public onResize(event) {
-    this.setGridColSizeAsPerWidth();
   }
 
   public sendMsg(text, data) {
@@ -302,12 +302,18 @@ export class InvoiceListComponent implements OnInit {
         field: 'UploadedDate',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
+        cellRenderer: (UploadedDate: any) => {
+          return moment(UploadedDate.createdAt).format('MM/DD/YYYY')
+        }
       },
       {
         headerName: 'Invoice Date',
         field: 'InvoiceDate',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
+        cellRenderer: (InvoiceDate: any) => {
+          return moment(InvoiceDate.createdAt).format('MM/DD/YYYY')
+        }
       },
       {
         headerName: 'Client',
@@ -343,6 +349,9 @@ export class InvoiceListComponent implements OnInit {
         field: 'AppealDeadlineDate',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
+        cellRenderer: (AppealDeadlineDate: any) => {
+          return moment(AppealDeadlineDate.createdAt).format('MM/DD/YYYY')
+        }
       },
       {
         headerName: 'Preparer',
@@ -356,28 +365,32 @@ export class InvoiceListComponent implements OnInit {
   }
 
   private autoSizeAll() {
-    let allColumnIds = [];
+    let allColumnIds: any[] = [];
     let gridColumnApi = this.gridApi.columnApi
-    gridColumnApi.getAllColumns().forEach(function (column) {
-      allColumnIds.push(column.colId);
-    });
-    gridColumnApi.autoSizeColumns(allColumnIds);
+    if (gridColumnApi) {
+      gridColumnApi.getAllColumns().forEach(function (column: any) {
+        allColumnIds.push(column.colId);
+      });
+      gridColumnApi.autoSizeColumns(allColumnIds);
+    }
   }
 
   private setGridColSizeAsPerWidth() {
     setTimeout(() => {
       this.autoSizeAll();
       let width = 0;
-      let gridColumnApi = this.gridApi.columnApi
-      gridColumnApi.getAllColumns().forEach(function (column) {
-        width = width + column.getActualWidth();
-      });
+      let gridColumnApi = this.gridApi.columnApi;
+      if (gridColumnApi) {
+        gridColumnApi.getAllColumns().forEach(function (column: any) {
+          width = width + column.getActualWidth();
+        });
+      }
       if (this.agGridDiv && width < this.agGridDiv.nativeElement.offsetWidth)
         this.gridApi.api.sizeColumnsToFit();
     }, 1);
   }
 
-  onBack(){
+  onBack() {
     this.router.navigate(['/invoices']);
   }
 }

@@ -31,6 +31,7 @@
     "@ng-bootstrap/ng-bootstrap": "^6.2.0",
     "bootstrap": "^5.0.0-beta3",
     "bootstrap-icons": "^1.5.0",
+    "moment": "^2.29.1",
     "ngx-bootstrap-icons": "^1.5.4",
     "rxjs": "~6.5.4",
     "sweetalert2": "^11.1.7",
