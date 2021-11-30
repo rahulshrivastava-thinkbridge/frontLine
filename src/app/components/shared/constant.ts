@@ -1,6 +1,7 @@
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 
 export const loginForm = {
+    LOGIN_HEADER_NAME: 'Login',
     USER_NAME: 'User Name',
     USER_NAME_ERROR: 'User Name is required',
     LOGIN_BUTTON_NAME: 'Log In',
@@ -13,6 +14,11 @@ export const loginForm = {
 
 export const invoiceList = {
     INVOICE_LIST: 'Invoice List',
+    ONE: '1',
+    ZERO: '0',
+    ROWCOUNT: '100',
+    ALL_ROW_WIDTH: '304',
+    INVOICE_WIDTH: '200'
 }
 
 export const header = {
@@ -28,18 +34,20 @@ export const invoiceDetails = {
     END_DATE: 'End Date :  ',
     INVOICE_FORMATE: ' Invoice Format : ',
     MATTER_DETAILS_HEADER: 'Matter Details ',
-    MATTER_NAME: 'Matter Name : (In Matter) ',
-    MATTER_NAMES: 'Matter Name : (In Invoice) ',
+    MATTER_NAME: 'Matter Name : ',
+    IN_MATTER: '(In Matter)',
+    IN_INVOICE: '(In Invoice)',
+    MATTER_NAMES: 'Matter Name : ',
     IS_FINAL: '  Is Final :',
     CLIENT: 'Client : ',
     FIRM_CLIENT: 'Firm Client : ',
     TAGS: 'Tags :',
     RULE_CODE: 'Rule Code :',
     FIRM_DETAILS_HEADER: 'Firm Details',
-    FIRM_MATTER_ID: 'Firm Matter Id : (In Matter)',
-    FIRM_MATTER_ID2: 'Firm Matter Id : (In Invoice)',
-    FIRM_CLIENT_ID: 'Firm Client Matter Id : (In Matter)',
-    FIRM_CLIENT_ID2: 'Firm Client Matter Id : (In Invoice)',
+    FIRM_MATTER_ID: 'Firm Matter Id : ',
+    FIRM_MATTER_ID2: 'Firm Matter Id : ',
+    FIRM_CLIENT_ID: 'Firm Client Matter Id :',
+    FIRM_CLIENT_ID2: 'Firm Client Matter Id :',
     ORIGINAL: 'Original ',
     CHANGE: 'Change ',
     FINAL: 'Final ',
@@ -47,6 +55,11 @@ export const invoiceDetails = {
     EXPENSES: 'Expenses ',
     DISCOUNTS: 'Discounts ',
     TOTAL: ' Total',
+    SAVE_BUTTTON: 'Save',
+    NULL_VALUE: 'NA',
+    ALL_ROW_WIDTH: '150',
+    DATE: '200',
+    DESCRIPTION: '400'
 }
 
 export const casecading = {

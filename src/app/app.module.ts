@@ -11,13 +11,14 @@ import { InvoiceCodeComponentComponent } from './agGridComponents/invoice-code-c
 import { LoginComponent } from './components/login/login.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
-import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
+//import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
 import { LocationStrategy } from '@angular/common';
 import { HttpInterceptorInterceptor } from './components/shared/http-interceptor.interceptor';
 import { HeaderComponent } from './components/shared/header/header.component';
 import { AuthGuard } from './auth.guard'
 import { FormsModule } from '@angular/forms';
 import { UploadInvoiceComponent } from './components/upload-invoice/upload-invoice.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,6 @@ import { UploadInvoiceComponent } from './components/upload-invoice/upload-invoi
     LoginComponent,
     HeaderComponent,
     UploadInvoiceComponent,
-
   ],
   imports: [
     BrowserModule,
@@ -38,7 +38,8 @@ import { UploadInvoiceComponent } from './components/upload-invoice/upload-invoi
     ReactiveFormsModule,
     AgGridModule.withComponents([]),
     NgbModule,
-    NgxBootstrapIconsModule.pick(allIcons) ,
+  //  NgxBootstrapIconsModule.pick(allIcons),
+    BrowserAnimationsModule ,
   
   ],
   providers: [InvoicingService, AuthGuard,

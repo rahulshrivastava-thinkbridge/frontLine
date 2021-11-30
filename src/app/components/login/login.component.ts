@@ -26,6 +26,7 @@ export class LoginComponent implements OnInit {
   public loginButton: string;
   public rememberMe: string;
   public forgotPassword: string
+  public loginHeaderName: string;
 
   constructor(private formBuilder: FormBuilder, private loginService: LoginService,
     private router: Router,) {
@@ -38,6 +39,7 @@ export class LoginComponent implements OnInit {
     this.loginButton = loginForm.LOGIN_BUTTON_NAME;
     this.rememberMe = loginForm.REMEMBER_ME;
     this.forgotPassword = loginForm.FORGOT_PASSWORD;
+    this.loginHeaderName = loginForm.LOGIN_HEADER_NAME;
   }
 
   ngOnInit() {
@@ -48,7 +50,6 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  // convenience getter for easy access to form fields
   get f() { return this.loginForm.controls; }
 
   show() {

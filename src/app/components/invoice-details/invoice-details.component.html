@@ -1,160 +1,8 @@
-<!-- <app-header></app-header>
-<ol class="breadcrumb">
-    <li class="breadcrumb-item" (click)="onBack()" style="color: blue; cursor: pointer;"> {{home}}</li>
-    <li class="breadcrumb-item" (click)="onBack()" style="color: blue; cursor: pointer;">{{headerInvoicelist}}</li>
-    <li class="breadcrumb-item active" aria-current="page">{{headerInvoiceDetails}}</li>
-</ol>
-<div class="body">
-    <div class="card invoiceDetail">
-        <div class="header">
-            <h6> {{invoiceHeader}} </h6>
-        </div>
-        <div class="row m-2">
-            <div class="col-md-6 fontsize">
-                <div class="mt-2"><span> {{invoiceNumbers}} </span></div>
-                <div class="mt-2"><span> {{invoiceDates}} </span></div>
-                <div class="mt-2"><span> {{startDates}} </span></div>
-                <div class="mt-2"><span> {{endDates }} </span></div>
-                <div class="mt-2"><span> {{invoiceFormate }} </span></div>
-            </div>
-            <div class="col-md-6 fontsize">
-                <div class="mt-2"><span>{{invoiceNumber}}</span></div>
-                <div class="mt-2"><span>{{invoiceDate | date : "dd/MM/y" }} </span></div>
-                <div class="mt-2"><span> {{startDate | date : "dd/MM/y" }} </span></div>
-                <div class="mt-2"><span>{{endDate | date : "dd/MM/y" }} </span></div>
-                <div class="mt-2"><span>{{invoiceFormat}} </span></div>
-            </div>
-        </div>
-    </div>
-    <div class="card firmDetails">
-        <div class="header">
-            <h6>{{firmHeader}} </h6>
-        </div>
-        <div class="row ml-2 mt-1 fontsize">
-            <div class="col-md-5">{{firmMatterId1}}
-            </div>
-            <div class="col-md-1">
-            </div>
-            <div class="col-md-6"> {{firmMatterId}}</div>
-        </div>
-        <div class="row ml-2 mt-1 fontsize">
-            <div class="col-md-5">{{firmMatterId2}}
-            </div>
-            <div class="col-md-1 ">
-            </div>
-            <div class="col-md-6">{{firmMatterId}}</div>
-        </div>
-        <div class="row ml-2 mt-1 fontsize">
-            <div class="col-md-6 ">{{firmClientId}}
-            </div>
-            <div class="col-md-6"> {{firmClientMatterId}} </div>
-        </div>
-        <div class="row ml-2 mt-1 fontsize">
-            <div class="col-md-6 ">{{firmClientId2}}
-            </div>
-            <div class="col-md-6"> {{firmClientMatterId}} </div>
-        </div>
-    </div>
-    <div class="card matterDetails">
-        <div class="header">
-            <h6> {{matterHeader}} </h6>
-        </div>
-        <div class="row ml-2 fontsize">
-            <div class="col-md-4">{{matterName1}}
-            </div>
-            <div class="col-md-8"> {{matterName}} </div>
-        </div>
-        <div class="row ml-2 fontsize">
-            <div class="col-md-4 ">{{matterName2}}
-            </div>
-            <div class="col-md-8">{{matterName}}</div>
-        </div>
-        <div class="row ml-2 fontsize">
-            <div class="col-md-4 ">{{isFinals}}
-            </div>
-            <div class="col-md-8"> {{isFinal}} </div>
-        </div>
-        <div class="row ml-2 fontsize">
-            <div class="col-md-4">{{clients}}
-            </div>
-            <div class="col-md-8"> {{client}} </div>
-        </div>
-        <div class="row ml-2 fontsize">
-            <div class="col-md-4 "> {{ firmClients }}
-            </div>
-            <div class="col-md-8"> {{firmClient}} </div>
-        </div>
-        <div class="row ml-2 fontsize">
-            <div class="col-md-4 ">{{ tagss }}
-            </div>
-            <div class="col-md-8"> {{tags}}</div>
-        </div>
-        <div class="row ml-2 fontsize">
-            <div class="col-md-4 "> {{ ruleCodes }}
-            </div>
-            <div class="col-md-8"> {{ruleCode}} </div>
-        </div>
-    </div>
-    <div class="card finalTable">
-        <div class="">
-            <table class="table table-bordered">
-                <thead style="background: #E6E6E6;">
-                    <tr class="tablehight">
-                        <th></th>
-                        <th> {{orignal}} </th>
-                        <th>{{changes}} </th>
-                        <th>{{finals}} </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="tablehight">
-                        <td style="font-weight: 700;font-size: 16px;">{{feess}}</td>
-                        <td> {{totalOld}} </td>
-                        <td> {{change}} </td>
-                        <td> {{total}} </td>
-                    </tr>
-                    <tr class="tablehight">
-                        <td style="font-weight: 700;font-size: 16px;">{{expensess}}</td>
-                        <td> {{expenses}} </td>
-                        <td> {{expenses}} </td>
-                        <td> {{expenses}} </td>
-                    </tr>
-                    <tr class="tablehight">
-                        <td style="font-weight: 700;font-size: 16px;">{{discounts}}</td>
-                        <td> {{discount}} </td>
-                        <td>{{discount}} </td>
-                        <td> {{discount}} </td>
-                    </tr>
-                    <tr class="tablehight">
-                        <td style="font-weight: 700;font-size: 16px;">{{totals}}</td>
-                        <td> {{original}} </td>
-                        <td> {{changeValue}} </td>
-                        <td> {{final}} </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="card list mt-2">
-        <div class="headername my-2"> {{invoiceHeader}} </div>
-        <div class="border-top mx-3 mt-2"></div>
-        <div class="row">
-            <div class="col-12">
-                <div class="customHeights">
-                    <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData"
-                        [singleClickEdit]="true" style="height: 100%;width:100%"
-                        class="agGridHorizontalScroll ag-theme-material grid">
-                    </ag-grid-angular>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> -->
 <app-header></app-header>
 <div class="body">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item" (click)="onBack()" style="color: blue; cursor: pointer;"> {{home}}</li>
-        <li class="breadcrumb-item" (click)="onBack()" style="color: blue; cursor: pointer;">{{headerInvoicelist}}</li>
+        <li class="breadcrumb-item bredcrumpColor" (click)="onBack()"> {{home}}</li>
+        <li class="breadcrumb-item bredcrumpColor" (click)="onBack()">{{headerInvoicelist}}</li>
         <li class="breadcrumb-item active" aria-current="page">{{headerInvoiceDetails}}</li>
     </ol>
     <div class="row row-cols-1 row-cols-md-4 g-2 mx-3">
@@ -163,7 +11,7 @@
                 <div class="header">
                     <h6> {{invoiceHeader}} </h6>
                 </div>
-                <div class="row  mt-2 mx-1">
+                <div class="row mt-2 mx-1">
                     <div class="col-md-6">{{invoiceNumbers}}
                     </div>
                     <div class="col-md-6"> {{invoiceNumber}}</div>
@@ -196,22 +44,22 @@
                     <h6>{{firmHeader}} </h6>
                 </div>
                 <div class="row  mt-1 mx-1">
-                    <div class="col-md-6">Firm Matter Id :  <br/> (In Matter)
+                    <div class="col-md-6">{{this.firmMatterId1}} <br /> {{ this.inMatter}}
                     </div>
                     <div class="col-md-6"> {{firmMatterId}}</div>
                 </div>
                 <div class="row ml-2 mx-1 ">
-                    <div class="col-md-6">Firm Matter Id : <br/> (In Matter)
+                    <div class="col-md-6">{{this.firmMatterId1}} <br /> {{this.inInvoice}}
                     </div>
                     <div class="col-md-6">{{firmMatterId}}</div>
                 </div>
                 <div class="row  mt-1 mx-1">
-                    <div class="col-md-6 "> Firm Client Matter Id : <br/> (In Matter)
+                    <div class="col-md-6 "> {{this.firmClientId}} <br /> {{ this.inMatter}}
                     </div>
                     <div class="col-md-6"> {{firmClientMatterId}} </div>
                 </div>
                 <div class="row mt-1 mx-1">
-                    <div class="col-md-6 ">Firm Client Matter Id : <br/>(In Invoice)
+                    <div class="col-md-6 ">{{this.firmClientId}} <br />{{this.inInvoice}}
                     </div>
                     <div class="col-md-6"> {{firmClientMatterId}} </div>
                 </div>
@@ -223,11 +71,11 @@
                     <h6> {{matterHeader}} </h6>
                 </div>
                 <div class="row mx-1">
-                    <div class="col-md-4">Matter Name : <br/> (In Matter)</div>
+                    <div class="col-md-4">{{this.matterName1}} <br /> {{this.inMatter}}</div>
                     <div class="col-md-8"> {{matterName}}</div>
                 </div>
                 <div class="row mx-1">
-                    <div class="col-md-4 ">Matter Name : <br/> (In Invoice)
+                    <div class="col-md-4 ">{{this.matterName1}} <br /> {{this.inInvoice}}
                     </div>
                     <div class="col-md-8">{{matterName}}</div>
                 </div>
@@ -261,9 +109,9 @@
         <div class="col">
             <div class="card finalTable ">
                 <div class=" table-responsive">
-                    <table class="table table-bordered  m-auto table1" style="display:table">
-                        <thead style="background: #E6E6E6;">
-                            <tr class="">
+                    <table class="table table-bordered  m-auto table1">
+                        <thead class="tableHeaderColor">
+                            <tr>
                                 <th></th>
                                 <th> {{orignal}} </th>
                                 <th>{{changes}} </th>
@@ -271,26 +119,26 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="">
-                                <td style="font-weight: 700;font-size: 16px;">{{feess}}</td>
+                            <tr>
+                                <td class="tableDataFont">{{feess}}</td>
                                 <td> {{totalOld}} </td>
                                 <td> {{change}} </td>
                                 <td> {{total}} </td>
                             </tr>
-                            <tr class="">
-                                <td style="font-weight: 700;font-size: 16px;">{{expensess}}</td>
+                            <tr>
+                                <td class="tableDataFont">{{expensess}}</td>
                                 <td> {{expenses}} </td>
                                 <td> {{expenses}} </td>
                                 <td> {{expenses}} </td>
                             </tr>
-                            <tr class="">
-                                <td style="font-weight: 700;font-size: 16px;">{{discounts}}</td>
+                            <tr>
+                                <td class="tableDataFont">{{discounts}}</td>
                                 <td> {{discount}} </td>
                                 <td>{{discount}} </td>
                                 <td> {{discount}} </td>
                             </tr>
-                            <tr class="">
-                                <td style="font-weight: 700;font-size: 16px;">{{totals}}</td>
+                            <tr>
+                                <td class="tableDataFont">{{totals}}</td>
                                 <td> {{original}} </td>
                                 <td> {{changeValue}} </td>
                                 <td> {{final}} </td>
@@ -308,17 +156,17 @@
             <div class="col-12">
                 <div class="customHeights">
                     <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData"
-                    (cellClicked)="onCellClicked($event)" (gridReady)="onGridReady($event)" [singleClickEdit]="true" class="agGridHorizontalScroll ag-theme-material grid">
+                        (cellClicked)="onCellClicked($event)" (gridReady)="onGridReady($event)" [singleClickEdit]="true"
+                        class="agGridHorizontalScroll ag-theme-material grid">
                     </ag-grid-angular>
                 </div>
             </div>
         </div>
     </div>
     <div class="saveButtons">
-        <button type="button" class="btn btn-primary btn-sm" style="background-color: #2D76BC;"
-            (click)="updateTable()">Save 
-            <!-- <i class="fas fa-save"></i> -->
-            <i class="fa fa-save" style="margin-left: 5px;"></i>
-         </button>
+        <button type="button save" class="btn btn-primary btn-sm" [disabled]="condition"
+            (click)="updateTable()">{{saveButton}}
+            <i class="fas fa-save ml-1"></i>
+        </button>
     </div>
 </div>

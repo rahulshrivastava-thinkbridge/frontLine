@@ -43,9 +43,19 @@ export class InvoiceListComponent implements OnInit {
   private columnTypes;
   public home: any;
   public headerInvoicelist: any;
+  public one: any;
+  public zero: any;
+  public rowCount: any;
+  public allRowWidth: any;
+  public invoiceWidth: any;
 
   constructor(private router: Router, private invoicingService: InvoicingService, private formBuilder: FormBuilder,) {
     this.invoiceList = invoiceList.INVOICE_LIST;
+    this.one = invoiceList.ONE;
+    this.zero = invoiceList.ZERO;
+    this.rowCount = invoiceList.ROWCOUNT;
+    this.allRowWidth = invoiceList.ALL_ROW_WIDTH;
+    this.invoiceWidth = invoiceList.INVOICE_WIDTH;
     this.home = casecading.HOME;
     this.headerInvoicelist = casecading.INVOICE_LIST;
     this.rowModelType = 'serverSide';
@@ -90,7 +100,7 @@ export class InvoiceListComponent implements OnInit {
   private getGridConfig() {
     let vm = this
     this.agGridOption = {
-      defaultColDef: { flex: 1, minWidth: 304, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true },
+      defaultColDef: { flex: this.one, minWidth: this.allRowWidth, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true },
       rowSelection: 'multiple',
       enableMultiRowDragging: true,
       suppressRowClickSelection: true,
@@ -100,12 +110,12 @@ export class InvoiceListComponent implements OnInit {
       columnDefs: this.getColumnDefinition(),
       animateRows: true,
       groupSelectsChildren: true,
-      groupDefaultExpanded: 1,
+      groupDefaultExpanded: this.one,
       unSortIcon: true,
       context: { componentParent: this },
       suppressContextMenu: true,
       //noRowsOverlayComponentFramework: NoRowOverlayComponent,
-      noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length == 0 ? 'No matching records found for the required search' : 'No invoices to display' },
+      // noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length == 0 ? 'No matching records found for the required search' : 'No invoices to display' },
       onModelUpdated,
     }
 
@@ -129,7 +139,7 @@ export class InvoiceListComponent implements OnInit {
         let request = params.request;
         this.setFilter(request.filterModel)
         const indexData = request.endRow;
-        this.pageIndex = indexData / 100;
+        this.pageIndex = indexData / this.rowCount;
         let parameters = {
           pageIndex: this.pageIndex,
           startRecord: request.startRow,
@@ -293,9 +303,10 @@ export class InvoiceListComponent implements OnInit {
           return params.value;
         },
         sort: 'asc',
-        maxWidth: 200,
+        maxWidth: this.invoiceWidth,
         filter: 'agNumberColumnFilter',
         cellRendererFramework: InvoiceCodeComponentComponent,
+        pinned: 'left',
       },
       {
         headerName: 'Uploaded Date',
@@ -378,7 +389,7 @@ export class InvoiceListComponent implements OnInit {
   private setGridColSizeAsPerWidth() {
     setTimeout(() => {
       this.autoSizeAll();
-      let width = 0;
+      let width = this.zero;
       let gridColumnApi = this.gridApi.columnApi;
       if (gridColumnApi) {
         gridColumnApi.getAllColumns().forEach(function (column: any) {
@@ -387,15 +398,13 @@ export class InvoiceListComponent implements OnInit {
       }
       if (this.agGridDiv && width < this.agGridDiv.nativeElement.offsetWidth)
         this.gridApi.api.sizeColumnsToFit();
-    }, 1);
+    }, this.one);
   }
 
   onBack() {
     this.router.navigate(['/invoices']);
   }
+
 }
 
-function sortAndFilter(response: Object, sortModel: any, filterModel: any) {
-  throw new Error('Function not implemented.');
-}
 

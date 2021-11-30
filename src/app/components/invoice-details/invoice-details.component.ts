@@ -4,7 +4,7 @@ import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
 import { MenuModule } from '@ag-grid-enterprise/menu';
 import { InvoicingService } from 'src/app/services/invoicing.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { invoiceDetails, casecading } from '../shared/constant';
+import { invoiceDetails, casecading, invoiceList } from '../shared/constant';
 import { DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
 
@@ -25,9 +25,11 @@ export class InvoiceDetailsComponent implements OnInit {
   public agGridOption: GridOptions;
   public rowData: any;
   public data: any;
+  public condition: any;
   public gridApi: any;
   public apiSuccessFull: boolean;
   public id: number;
+  public saveButton: any;
   public invoiceNumber: any;
   public invoiceDate: string = new Date().toISOString();
   public startDate: string = new Date().toISOString();;
@@ -88,16 +90,30 @@ export class InvoiceDetailsComponent implements OnInit {
   public home: any;
   public headerInvoicelist: any;
   public headerInvoiceDetails: any;
+  public nullValue: any;
+  public allRowWidth: any;
+  public date: any;
+  public description: any;
+  public inInvoice: any;
+  public inMatter: any;
+  public one: any;
+  public zero: any;
   pipe = new DatePipe('en-US');
 
   constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoicingService) {
-    this.discount = 0;
+    this.one = invoiceList.ONE;
+    this.zero = invoiceList.ZERO;
+    this.discount = this.zero;
     this.expenses = 0;
+    this.condition = true;
+    this.saveButton = invoiceDetails.SAVE_BUTTTON;
     this.invoiceHeader = invoiceDetails.INVOICE_HEADER;
     this.invoiceNumbers = invoiceDetails.INVOICE_NUMBER;
     this.invoiceDates = invoiceDetails.INVOICE_DATE;
     this.startDates = invoiceDetails.START_DATE;
     this.endDates = invoiceDetails.END_DATE;
+    this.inInvoice = invoiceDetails.IN_INVOICE;
+    this.inMatter = invoiceDetails.IN_MATTER;
     this.invoiceFormate = invoiceDetails.INVOICE_FORMATE;
     this.matterHeader = invoiceDetails.MATTER_DETAILS_HEADER;
     this.matterName1 = invoiceDetails.MATTER_NAME;
@@ -119,10 +135,13 @@ export class InvoiceDetailsComponent implements OnInit {
     this.expensess = invoiceDetails.EXPENSES;
     this.discounts = invoiceDetails.DISCOUNTS;
     this.totals = invoiceDetails.TOTAL;
-    this.nullValueSet = 'NA';
+    this.nullValueSet = invoiceDetails.NULL_VALUE;
     this.home = casecading.HOME;
     this.headerInvoicelist = casecading.INVOICE_LIST;
     this.headerInvoiceDetails = casecading.INVOICE_DETAILS;
+    this.allRowWidth = invoiceDetails.ALL_ROW_WIDTH;
+    this.date = invoiceDetails.DATE;
+    this.description = invoiceDetails.DESCRIPTION;
   }
 
   ngOnInit(): void {
@@ -142,7 +161,7 @@ export class InvoiceDetailsComponent implements OnInit {
   private getGridConfig() {
     let vm = this
     this.agGridOption = {
-      defaultColDef: { flex: 1, minWidth: 150, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true, },
+      defaultColDef: { flex: this.one, minWidth: this.allRowWidth, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true, },
       rowSelection: 'multiple',
       enableMultiRowDragging: true,
       suppressRowClickSelection: true,
@@ -152,7 +171,7 @@ export class InvoiceDetailsComponent implements OnInit {
       columnDefs: this.getColumnDefinition(),
       animateRows: true,
       groupSelectsChildren: true,
-      groupDefaultExpanded: 1,
+      groupDefaultExpanded: this.one,
       unSortIcon: true,
       context: { componentParent: this },
       suppressContextMenu: true,
@@ -160,7 +179,7 @@ export class InvoiceDetailsComponent implements OnInit {
         return data.id;
       },
       //noRowsOverlayComponentFramework: NoRowOverlayComponent,
-      noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length ? 'No matching records found for the required search' : 'No invoice details to display' },
+      // noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length ? 'No matching records found for the required search' : 'No invoice details to display' },
       onModelUpdated,
     }
 
@@ -183,20 +202,6 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   private getColumnDefinition() {
-    function ragRenderer(params) {
-      return '<span class="rag-element">' + params.value + '</span>';
-    }
-    var ragCellClassRules = {
-      'rag-green-outer': function (params) {
-        return params.value == 'Active';
-      },
-      'rag-amber-outer': function (params) {
-        return params.value == 11.00;
-      },
-      'rag-red-outer': function (params) {
-        return params.value === 2000;
-      },
-    };
     return [
       {
         headerName: "Status",
@@ -242,7 +247,7 @@ export class InvoiceDetailsComponent implements OnInit {
         field: 'Date',
         filter: 'agDateColumnFilter',
         comparator: this.dateComparator,
-        minWidth: 180
+        minWidth: this.date
       },
       {
         headerName: "Task",
@@ -259,20 +264,16 @@ export class InvoiceDetailsComponent implements OnInit {
       {
         headerName: 'Description',
         field: 'Description',
-        minWidth: 400,
+        minWidth: this.description,
         cellEditor: 'agLargeTextCellEditor',
       },
       {
         headerName: 'ML Preparation Note',
         field: 'MLPreparationNotes',
-        minWidth: 300,
+        minWidth: this.description,
         cellEditor: 'agLargeTextCellEditor',
       },
     ]
-  }
-
-  ragRenderer(params) {
-    return '<span class="rag-element">' + params.value + '</span>';
   }
 
   private dateComparator(date1, date2) {
@@ -302,6 +303,7 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   onCellClicked($event: any) {
+    this.condition = false;
     // check whether the current row is already opened in edit or not
     if (this.editingRowIndex != $event.rowIndex) {
       console.log($event);
@@ -336,18 +338,18 @@ export class InvoiceDetailsComponent implements OnInit {
             'success'
           )
           this.getData();
+          this.condition = true;
         } else {
           Swal.fire({
             icon: 'error',
             title: ' ',
             text: 'error!',
           })
-        }
+        } this.condition = true;
       }, () => {
       }).add(() => {
         subscription.unsubscribe();
       })
-
   }
 
   private getData() {
@@ -369,31 +371,19 @@ export class InvoiceDetailsComponent implements OnInit {
               const now = this.myDateParser(date);
               const Date = this.pipe.transform(now, 'MM/dd/y');
               this.data[i]["Date"] = Date;
+              let rate = this.data[i].Rate;
+              let units = this.data[i].Units;
+              let rateUnitsTotals = Number(rate * units);
+              this.data[i]["Total"] = parseFloat(JSON.stringify(rateUnitsTotals)).toFixed(2);
             }
             this.rowData = this.data;
-            this.setGridColSizeAsPerWidth();
-            this.apiSuccessFull = true;
-            let sum = 0;
-            for (var i in this.data) {
-              sum += parseFloat(this.data[i].TotalOld);
-            }
-            this.totalOld = sum || 0;
-
-            let old = 0;
-            for (var i in this.data) {
-              old += parseFloat(this.data[i].Total);
-            }
-            this.total = old || 0;
-            this.change = this.totalOld - this.total || 0;
-            let des = 0;
-            for (var i in this.data) {
-              des += parseFloat(this.data[i].Discounts);
-              this.dess = des;
-            }
-            this.discount = this.dess || 0;
-            this.original = this.totalOld + this.discount + this.expenses || 0;
-            this.changeValue = this.change + this.discount + this.expenses || 0;
-            this.final = this.total + this.discount + this.expenses || 0;
+            this.totalOld = this.rowData.map((e: { TotalOld: any; }) => Number(e.TotalOld)).reduce((a: any, b: any) => a + b, 0);
+            this.total = this.rowData.map((e: { Total: any; }) => Number(e.Total)).reduce((a: any, b: any) => a + b, 0);
+            this.change = this.totalOld - this.total;
+            this.discount = this.rowData.map((e: { Discounts: any; }) => Number(e.Discounts)).reduce((a: any, b: any) => a + b, 0);
+            this.original = this.totalOld + this.discount + this.expenses;
+            this.changeValue = this.change + this.discount + this.expenses;
+            this.final = this.total + this.discount + this.expenses;
           })
       })
   }
@@ -407,23 +397,21 @@ export class InvoiceDetailsComponent implements OnInit {
       });
       gridColumnApi.autoSizeColumns(allColumnIds);
     }
-
   }
 
   private setGridColSizeAsPerWidth() {
     setTimeout(() => {
       this.autoSizeAll();
-      let width = 0;
+      let width = this.zero;
       let gridColumnApi = this.gridApi.columnApi;
       if (gridColumnApi) {
         gridColumnApi.getAllColumns().forEach(function (column: any) {
           width = width + column.getActualWidth();
         });
       }
-
       if (this.agGridDiv && width < this.agGridDiv.nativeElement.offsetWidth)
         this.gridApi.api.sizeColumnsToFit();
-    }, 1);
+    }, this.one);
   }
 
   myDateParser(dateStr: string): string {
@@ -433,7 +421,23 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['/invoices']);
+    if (this.condition == false) {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You have unsaved changes. Do you still want to continue?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: ' Yes '
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.router.navigate(['/invoices']);
+        }
+      })
+    } else {
+      this.router.navigate(['/invoices']);
+    }
   }
 
 }
