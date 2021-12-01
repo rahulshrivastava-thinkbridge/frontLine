@@ -303,8 +303,6 @@ export class InvoiceDetailsComponent implements OnInit {
   }
 
   onCellClicked($event: any) {
-    this.condition = false;
-    // check whether the current row is already opened in edit or not
     if (this.editingRowIndex != $event.rowIndex) {
       console.log($event);
       $event.api.startEditingCell({
@@ -313,6 +311,10 @@ export class InvoiceDetailsComponent implements OnInit {
       });
       this.editingRowIndex = $event.rowIndex;
     }
+  }
+
+  onCellValueChanged(params: any) {
+    this.condition = false;
   }
 
   updateTable() {
@@ -429,7 +431,8 @@ export class InvoiceDetailsComponent implements OnInit {
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: ' Yes '
+        confirmButtonText: ' Yes ',
+        cancelButtonText: ' No ',
       }).then((result) => {
         if (result.isConfirmed) {
           this.router.navigate(['/invoices']);

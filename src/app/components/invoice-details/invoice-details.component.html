@@ -157,6 +157,7 @@
                 <div class="customHeights">
                     <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData"
                         (cellClicked)="onCellClicked($event)" (gridReady)="onGridReady($event)" [singleClickEdit]="true"
+                        (cellValueChanged)="onCellValueChanged($event)"
                         class="agGridHorizontalScroll ag-theme-material grid">
                     </ag-grid-angular>
                 </div>
