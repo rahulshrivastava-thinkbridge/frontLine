@@ -1,5 +1,3 @@
-import { FormControl, Validators, FormGroup } from '@angular/forms';
-
 export const loginForm = {
     LOGIN_HEADER_NAME: 'Login',
     USER_NAME: 'User Name',
@@ -14,8 +12,8 @@ export const loginForm = {
 
 export const invoiceList = {
     INVOICE_LIST: 'Invoice List',
-    ONE: '1',
-    ZERO: '0',
+    ONE: 1,
+    ZERO: 0,
     ROWCOUNT: '100',
     ALL_ROW_WIDTH: '304',
     INVOICE_WIDTH: '200'

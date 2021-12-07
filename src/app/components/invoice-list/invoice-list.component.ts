@@ -49,7 +49,7 @@ export class InvoiceListComponent implements OnInit {
   public allRowWidth: any;
   public invoiceWidth: any;
 
-  constructor(private router: Router, private invoicingService: InvoicingService, private formBuilder: FormBuilder,) {
+  constructor(private router: Router, private invoicingService: InvoicingService, private formBuilder: FormBuilder) {
     this.invoiceList = invoiceList.INVOICE_LIST;
     this.one = invoiceList.ONE;
     this.zero = invoiceList.ZERO;

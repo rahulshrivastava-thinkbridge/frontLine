@@ -19,6 +19,7 @@ import { AuthGuard } from './auth.guard'
 import { FormsModule } from '@angular/forms';
 import { UploadInvoiceComponent } from './components/upload-invoice/upload-invoice.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -36,11 +37,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    MatProgressSpinnerModule ,
+    MatProgressSpinnerModule,
     AgGridModule.withComponents([]),
     NgbModule,
   //  NgxBootstrapIconsModule.pick(allIcons),
     BrowserAnimationsModule ,
-  
   ],
   providers: [InvoicingService, AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorInterceptor, multi: true },

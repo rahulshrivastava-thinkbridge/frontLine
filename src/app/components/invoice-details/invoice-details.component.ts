@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { invoiceDetails, casecading, invoiceList } from '../shared/constant';
 import { DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
+import { LoaderService } from '../../services/loader.service';
 
 @Component({
   selector: 'app-invoice-details',
@@ -14,11 +15,11 @@ import Swal from 'sweetalert2';
   styleUrls: ['./invoice-details.component.scss']
 })
 export class InvoiceDetailsComponent implements OnInit {
-  @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv;
-  editingRowIndex: any;
+  @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv: any;
   gridColumnApi: any;
+  editingRowIndex: any;
   @HostListener('window:resize', ['$event'])
-  public onResize(event) {
+  public onResize(event: any) {
     this.setGridColSizeAsPerWidth();
   }
   public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule]]
@@ -99,12 +100,14 @@ export class InvoiceDetailsComponent implements OnInit {
   public one: any;
   public zero: any;
   pipe = new DatePipe('en-US');
+  loading$ = this.loader.loading$;
 
-  constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoicingService) {
+  constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoicingService,
+    public loader: LoaderService) {
     this.one = invoiceList.ONE;
     this.zero = invoiceList.ZERO;
     this.discount = this.zero;
-    this.expenses = 0;
+    this.expenses = this.zero;
     this.condition = true;
     this.saveButton = invoiceDetails.SAVE_BUTTTON;
     this.invoiceHeader = invoiceDetails.INVOICE_HEADER;
@@ -146,7 +149,6 @@ export class InvoiceDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getGridConfig();
-    this.getData();
     const invoiceDetails = localStorage.getItem('invoicedetail');
     const invoiceData = JSON.parse(invoiceDetails);
     this.invoiceNumber = invoiceData.InvoiceNumber || this.nullValueSet;
@@ -156,6 +158,7 @@ export class InvoiceDetailsComponent implements OnInit {
     this.matterName = invoiceData.MatterName || this.nullValueSet;
     this.client = invoiceData.ClientName || this.nullValueSet;
     this.firmClient = invoiceData.LawFirmName || this.nullValueSet;
+    this.getData();
   }
 
   private getGridConfig() {
@@ -163,7 +166,7 @@ export class InvoiceDetailsComponent implements OnInit {
     this.agGridOption = {
       defaultColDef: { flex: this.one, minWidth: this.allRowWidth, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true, },
       rowSelection: 'multiple',
-      enableMultiRowDragging: true,
+      stopEditingWhenCellsLoseFocus: true,
       suppressRowClickSelection: true,
       rowDragManaged: true,
       suppressMoveWhenRowDragging: true,
@@ -173,17 +176,14 @@ export class InvoiceDetailsComponent implements OnInit {
       groupSelectsChildren: true,
       groupDefaultExpanded: this.one,
       unSortIcon: true,
+      pagination: false,
       context: { componentParent: this },
       suppressContextMenu: true,
-      getRowNodeId: function (data) {
-        return data.id;
-      },
       //noRowsOverlayComponentFramework: NoRowOverlayComponent,
       // noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length ? 'No matching records found for the required search' : 'No invoice details to display' },
       onModelUpdated,
     }
-
-    function onModelUpdated(params) {
+    function onModelUpdated(params: any) {
       if (!vm.apiSuccessFull)
         return;
       if (params.api.getDisplayedRowCount()) params.api.hideOverlay();
@@ -236,7 +236,7 @@ export class InvoiceDetailsComponent implements OnInit {
       {
         headerName: "Total",
         field: 'Total',
-
+        editable: false,
       },  // cellStyle: params => params.value == 22.00 ? { color: 'red' } : { color: 'green' }
       {
         headerName: "Tags",
@@ -304,7 +304,6 @@ export class InvoiceDetailsComponent implements OnInit {
 
   onCellClicked($event: any) {
     if (this.editingRowIndex != $event.rowIndex) {
-      console.log($event);
       $event.api.startEditingCell({
         rowIndex: $event.rowIndex,
         colKey: $event.column.colId
@@ -313,12 +312,13 @@ export class InvoiceDetailsComponent implements OnInit {
     }
   }
 
-  onCellValueChanged(params: any) {
+  getLastCharacter($event) {
     this.condition = false;
   }
 
   updateTable() {
     this.gridApi.stopEditing();
+    this.loader.show();
     for (let i = 0; i < this.data.length; i++) {
       if (this.data[i].AgreedRate == null) {
         this.data[i].AgreedRate = ''
@@ -329,19 +329,20 @@ export class InvoiceDetailsComponent implements OnInit {
     }
     const subscription = this.invoicingService.invoiceLineitemsUpdate(JSON.stringify(this.data))
       .subscribe((response) => {
-
-
+        this.loader.hide();
       }, (error) => {
         console.log('error==>', error.error.text);
         if (error.error.text == 'Success') {
+          this.loader.hide();
           Swal.fire(
             ' ',
-            'modified successfully!',
+            'Modified Successfully!',
             'success'
           )
           this.getData();
           this.condition = true;
         } else {
+          this.loader.hide();
           Swal.fire({
             icon: 'error',
             title: ' ',
@@ -364,7 +365,6 @@ export class InvoiceDetailsComponent implements OnInit {
         this.isFinal = response[0].IsFinal || this.nullValueSet;
         this.tags = response[0].Tags || this.nullValueSet;
         this.ruleCode = response[0].RuleCode || this.nullValueSet;
-
         this.invoicingService.getInvoiceDetails(this.id)
           .subscribe((response) => {
             this.data = response;
@@ -379,10 +379,10 @@ export class InvoiceDetailsComponent implements OnInit {
               this.data[i]["Total"] = parseFloat(JSON.stringify(rateUnitsTotals)).toFixed(2);
             }
             this.rowData = this.data;
-            this.totalOld = this.rowData.map((e: { TotalOld: any; }) => Number(e.TotalOld)).reduce((a: any, b: any) => a + b, 0);
-            this.total = this.rowData.map((e: { Total: any; }) => Number(e.Total)).reduce((a: any, b: any) => a + b, 0);
+            this.totalOld = this.rowData.map((e: { TotalOld: any; }) => Number(e.TotalOld)).reduce((a: any, b: any) => a + b, this.zero);
+            this.total = this.rowData.map((e: { Total: any; }) => Number(e.Total)).reduce((a: any, b: any) => a + b, this.zero);
             this.change = this.totalOld - this.total;
-            this.discount = this.rowData.map((e: { Discounts: any; }) => Number(e.Discounts)).reduce((a: any, b: any) => a + b, 0);
+            this.discount = this.rowData.map((e: { Discounts: any; }) => Number(e.Discounts)).reduce((a: any, b: any) => a + b, this.zero);
             this.original = this.totalOld + this.discount + this.expenses;
             this.changeValue = this.change + this.discount + this.expenses;
             this.final = this.total + this.discount + this.expenses;
@@ -429,10 +429,10 @@ export class InvoiceDetailsComponent implements OnInit {
         text: "You have unsaved changes. Do you still want to continue?",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
+        confirmButtonColor: '#008000',
         cancelButtonColor: '#d33',
         confirmButtonText: ' Yes ',
-        cancelButtonText: ' No ',
+        cancelButtonText: ' No',
       }).then((result) => {
         if (result.isConfirmed) {
           this.router.navigate(['/invoices']);

@@ -6,27 +6,27 @@
         <li class="breadcrumb-item active" aria-current="page">{{headerInvoiceDetails}}</li>
     </ol>
     <div class="row row-cols-1 row-cols-md-4 g-2 mx-3">
-        <div class="col">
+        <div class="col-md-2">
             <div class="card table1 invoiceDetail allcart">
                 <div class="header">
-                    <h6> {{invoiceHeader}} </h6>
+                    <h4 class="cardHeaderName"> {{invoiceHeader}} </h4>
                 </div>
                 <div class="row mt-2 mx-1">
                     <div class="col-md-6">{{invoiceNumbers}}
                     </div>
                     <div class="col-md-6"> {{invoiceNumber}}</div>
                 </div>
-                <div class="row  mx-1 mt-1">
+                <div class="row mx-1 mt-1">
                     <div class="col-md-6">{{invoiceDates}}
                     </div>
                     <div class="col-md-6">{{invoiceDate | date : "dd/MM/y" }}</div>
                 </div>
-                <div class="row  mx-1 mt-1">
+                <div class="row mx-1 mt-1">
                     <div class="col-md-6 ">{{startDates}}
                     </div>
                     <div class="col-md-6"> {{startDate | date : "dd/MM/y" }} </div>
                 </div>
-                <div class="row  mx-1 mt-1">
+                <div class="row mx-1 mt-1">
                     <div class="col-md-6 ">{{endDates }}
                     </div>
                     <div class="col-md-6"> {{endDate | date : "dd/MM/y" }} </div>
@@ -38,49 +38,49 @@
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-3">
             <div class="card table1 firmDetails allcart">
                 <div class="header">
-                    <h6>{{firmHeader}} </h6>
+                    <h4 class="cardHeaderName"> {{firmHeader}} </h4>
                 </div>
-                <div class="row  mt-1 mx-1">
+                <div class="row mt-1 mx-1">
                     <div class="col-md-6">{{this.firmMatterId1}} <br /> {{ this.inMatter}}
                     </div>
                     <div class="col-md-6"> {{firmMatterId}}</div>
                 </div>
-                <div class="row ml-2 mx-1 ">
+                <div class="row ml-2 mx-1">
                     <div class="col-md-6">{{this.firmMatterId1}} <br /> {{this.inInvoice}}
                     </div>
                     <div class="col-md-6">{{firmMatterId}}</div>
                 </div>
-                <div class="row  mt-1 mx-1">
-                    <div class="col-md-6 "> {{this.firmClientId}} <br /> {{ this.inMatter}}
+                <div class="row mt-1 mx-1">
+                    <div class="col-md-6 ">{{this.firmClientId}} <br /> {{ this.inMatter}}
                     </div>
                     <div class="col-md-6"> {{firmClientMatterId}} </div>
                 </div>
                 <div class="row mt-1 mx-1">
-                    <div class="col-md-6 ">{{this.firmClientId}} <br />{{this.inInvoice}}
+                    <div class="col-md-6">{{this.firmClientId}} <br />{{this.inInvoice}}
                     </div>
                     <div class="col-md-6"> {{firmClientMatterId}} </div>
                 </div>
             </div>
         </div>
-        <div class="col">
+        <div class="col-md-4">
             <div class="card text matterDetails allcart">
                 <div class="header">
-                    <h6> {{matterHeader}} </h6>
+                    <h4 class="cardHeaderName"> {{matterHeader}}</h4>
                 </div>
                 <div class="row mx-1">
                     <div class="col-md-4">{{this.matterName1}} <br /> {{this.inMatter}}</div>
                     <div class="col-md-8"> {{matterName}}</div>
                 </div>
                 <div class="row mx-1">
-                    <div class="col-md-4 ">{{this.matterName1}} <br /> {{this.inInvoice}}
+                    <div class="col-md-4">{{this.matterName1}} <br /> {{this.inInvoice}}
                     </div>
                     <div class="col-md-8">{{matterName}}</div>
                 </div>
                 <div class="row mx-1">
-                    <div class="col-md-4 ">{{isFinals}}
+                    <div class="col-md-4">{{isFinals}}
                     </div>
                     <div class="col-md-8"> {{isFinal}} </div>
                 </div>
@@ -90,27 +90,27 @@
                     <div class="col-md-8"> {{client}} </div>
                 </div>
                 <div class="row mx-1">
-                    <div class="col-md-4 "> {{ firmClients }}
+                    <div class="col-md-4"> {{ firmClients }}
                     </div>
                     <div class="col-md-8"> {{firmClient}} </div>
                 </div>
-                <div class="row  mx-1">
-                    <div class="col-md-4 ">{{ tagss }}
+                <div class="row mx-1">
+                    <div class="col-md-4">{{ tagss }}
                     </div>
                     <div class="col-md-8"> {{tags}}</div>
                 </div>
-                <div class="row  mx-1">
+                <div class="row mx-1">
                     <div class="col-md-4"> {{ ruleCodes }}
                     </div>
                     <div class="col-md-8"> {{ruleCode}} </div>
                 </div>
             </div>
         </div>
-        <div class="col">
-            <div class="card finalTable ">
+        <div class="col-md-3">
+            <div class="card finalTable allcart">
                 <div class=" table-responsive">
-                    <table class="table table-bordered  m-auto table1">
-                        <thead class="tableHeaderColor">
+                    <table class="table table-bordered m-auto table1" style="display:table">
+                        <thead class="tableHeader">
                             <tr>
                                 <th></th>
                                 <th> {{orignal}} </th>
@@ -120,25 +120,25 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="tableDataFont">{{feess}}</td>
+                                <td>{{feess}}</td>
                                 <td> {{totalOld}} </td>
                                 <td> {{change}} </td>
                                 <td> {{total}} </td>
                             </tr>
                             <tr>
-                                <td class="tableDataFont">{{expensess}}</td>
+                                <td>{{expensess}}</td>
                                 <td> {{expenses}} </td>
                                 <td> {{expenses}} </td>
                                 <td> {{expenses}} </td>
                             </tr>
                             <tr>
-                                <td class="tableDataFont">{{discounts}}</td>
+                                <td>{{discounts}}</td>
                                 <td> {{discount}} </td>
                                 <td>{{discount}} </td>
                                 <td> {{discount}} </td>
                             </tr>
                             <tr>
-                                <td class="tableDataFont">{{totals}}</td>
+                                <td>{{totals}}</td>
                                 <td> {{original}} </td>
                                 <td> {{changeValue}} </td>
                                 <td> {{final}} </td>
@@ -157,13 +157,13 @@
                 <div class="customHeights">
                     <ag-grid-angular [gridOptions]="agGridOption" [modules]='modules' [rowData]="rowData"
                         (cellClicked)="onCellClicked($event)" (gridReady)="onGridReady($event)" [singleClickEdit]="true"
-                        (cellValueChanged)="onCellValueChanged($event)"
-                        class="agGridHorizontalScroll ag-theme-material grid">
+                        (keyup)="getLastCharacter($event)" class="agGridHorizontalScroll ag-theme-material grid">
                     </ag-grid-angular>
                 </div>
             </div>
         </div>
     </div>
+    <mat-progress-spinner [mode]="'indeterminate'" *ngIf="loading$ | async" color="accent"></mat-progress-spinner>
     <div class="saveButtons">
         <button type="button save" class="btn btn-primary btn-sm" [disabled]="condition"
             (click)="updateTable()">{{saveButton}}

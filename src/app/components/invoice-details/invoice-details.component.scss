@@ -34,13 +34,7 @@
     box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
  }
- 
- h6 {
-     font-family: Tahoma;
-     font-style: normal;
-     font-weight: bold;
- } 
- 
+
  .header {
      margin-top: 20px;
      margin-left: 15px;
@@ -50,8 +44,8 @@
     color: blue; cursor: pointer;
  }
 
- .tableHeaderColor {
-    background: #E6E6E6;
+ .tableHeader {
+    background: #E6E6E6;   
  }
  
  .tableDataFont {
@@ -91,16 +85,14 @@
      background-image:url("../../../assets/PageBackground.jpg");
  }
  
-   @media (min-width: 1400px) {    
-   .text {
-    min-width: 388px;
-   }
-   .table1 {
-       min-height: 287px;
-   }
-   .allcart {
-    max-height: 287px;
-   }
+@media (min-width: 1400px) {    
+.table1 {
+    min-height: 287px;
+}
+.allcart {
+  min-height: 287px;
+  max-height: 287px;
+ }
 }
 
 .saveButtons {
@@ -111,6 +103,23 @@
 
 .save {
     background-color: #2D76BC;
+}
+
+mat-progress-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+}
+
+:host ::ng-deep .mat-progress-spinner circle, .mat-spinner circle {   
+    stroke: #2D76BC;
+}
+
+.cardHeaderName {
+    font-weight: bold;
+    font-size: 16px;
 }
 
 

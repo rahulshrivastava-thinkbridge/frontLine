@@ -12,5 +12,5 @@ export class LoginService {
   login(objReqBody: any): Observable<any> {
     return this.http.post('https://frontlineebillingassistantapi.azurewebsites.net/api/auth/login', objReqBody);
   }
-  
+
 }
