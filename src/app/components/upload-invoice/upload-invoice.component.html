@@ -5,8 +5,6 @@
 <div class="choicefile">
     <input type="file" class="file-input"  
     (change)="onFileSelected($event)" #fileUpload>  
-
-
 </div>
 <li class="invoicetext">
     Upload Invoice
@@ -29,7 +27,7 @@
         </div>
         <header>Drag & Drop to Upload Invoice</header>
         <span>OR</span>
-        <button class="file-upload-button" >Browse Files
+        <button class="file-upload-button">Browse Files
             <input type="file" #fileUpload (change)="onFileSelected($event)" />
         </button>
     </div>
@@ -47,8 +45,8 @@
         <h6>Uploaded Invoice</h6>
         <div class="invoiceFileUploaded">
             <div class="fileDetails">
-                <div class="icon file" >
-                    <i class="fas fa-file-alt"  *ngIf="fileName"></i>
+                <div class="icon file">
+                    <i class="fas fa-file-alt" *ngIf="fileName"></i>
                 </div>
                 <a style="text-align: center;" *ngIf="fileName" style=" color: #2A79F0 !important;"> {{fileName}} </a>
                 <a *ngIf="!fileName" style="color: black;"> No Invoice has been uploaded</a>
@@ -63,7 +61,7 @@
     <button type="button" class="mt-4 disabled" data-toggle="modal" data-target="#errorModal">Submit</button>
 
     <!-- ---Invoice Available - Button Active--- -->
-    <button type="button" class="mt-4" data-toggle="modal" data-target="#validatingModal"  >Submit</button>
+    <button type="button" class="mt-4" data-toggle="modal" data-target="#validatingModal">Submit</button>
 
     <a href="/invoices" class="mt-3" data-toggle="modal" data-target="#successModal">Go to Invoice listing</a>
 
