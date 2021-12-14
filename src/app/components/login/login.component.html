@@ -3,19 +3,20 @@
         <div class="split right">
             <a href="#" class="logo"><img src="./assets/frontlinehirez.png" alt="logoImage"></a>
         </div>
+        <mat-progress-spinner [mode]="'indeterminate'" *ngIf="loading$ | async" color="accent"></mat-progress-spinner>
         <div class="split left">
             <h2>{{loginHeaderName}}</h2>
             <form [formGroup]="loginForm">
                 <div class="form-group">
                     <input type="text" formControlName="userName" class="form-control" placeholder="{{userName}}"
-                        [ngClass]="{ 'is-invalid': submitted && f.userName.errors }" required />
+                        [ngClass]="{'is-invalid': submitted && f.userName.errors }" required />
                     <div *ngIf="submitted && f.userName.errors" class="invalid-feedback">
                         <div *ngIf="f.userName.errors.required"> {{userError}}</div>
                     </div>
                 </div>
                 <div class="form-group">
                     <input type="password" formControlName="password" class="form-control"
-                        placeholder=" {{passwordName}}  " [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
+                        placeholder="{{passwordName}}" [ngClass]="{ 'is-invalid': submitted && f.password.errors }"
                         type="{{ hide ? 'password' : 'text'}}" required />
                     <span class="p-viewer">
                         <i class="far fa-eye-slash" aria-hidden="true" (click)="hide = !hide" [hidden]="showPassword"

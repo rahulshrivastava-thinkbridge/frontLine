@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LoginService } from '../../services/login.service';
-import { loginForm } from '../shared/constant';
+import { loginForm } from '../shared/constants';
 import Swal from 'sweetalert2';
+import { LoaderService } from 'src/app/services/loader.service';
 
 @Component({
   selector: 'app-login',
@@ -11,10 +12,9 @@ import Swal from 'sweetalert2';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  public title = 'angulartoastr';
   public showModal: boolean;
   public loginForm: FormGroup;
-  public submitted = false;
+  public submitted: boolean;
   public hide!: Boolean;
   public showPassword: boolean;
   public input: any;
@@ -27,9 +27,24 @@ export class LoginComponent implements OnInit {
   public rememberMe: string;
   public forgotPassword: string
   public loginHeaderName: string;
+  public loginSuccessMassage: string;
+  public loginWelcome: string;
+  public loginLogoSuccess: any;
+  public loginLogoError: any;
+  public loginErrorText: any;
+  public loginErrorTitle: any;
+  public loading$: any;
 
   constructor(private formBuilder: FormBuilder, private loginService: LoginService,
-    private router: Router,) {
+    private router: Router, public loader: LoaderService) {
+    this.loading$ = this.loader.loading$;
+    this.loginLogoError = loginForm.LOGIN_LOGO_ERROR
+    this.loginErrorText = loginForm.LOGIN_ERROR_TEXT
+    this.loginErrorTitle = loginForm.LOGIN_ERROR_TITLE
+    this.loginSuccessMassage = loginForm.LOGIN_SUCCES_MASSAGE;
+    this.loginWelcome = loginForm.LOGIN_WELCOME;
+    this.loginLogoSuccess = loginForm.LOGIN_LOGO_SUCCESS;
+    this.submitted = false
     this.hide = true;
     this.userName = loginForm.USER_NAME;
     this.passwordName = loginForm.PASSWORD_TITLE;
@@ -50,7 +65,7 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  get f() { return this.loginForm.controls; }
+  get f() { return this.loginForm.controls }
 
   show() {
     this.showPassword = true;
@@ -62,7 +77,7 @@ export class LoginComponent implements OnInit {
 
   onLogin() {
     this.submitted = true;
-    // stop here if form is invalid
+    this.loader.show();
     if (this.loginForm.invalid) {
       return;
     }
@@ -74,12 +89,13 @@ export class LoginComponent implements OnInit {
         password: password,
       }
       const unsubscribe = this.loginService.login(userDetail).subscribe((response) => {
+        this.loader.hide();
         const data = response;
         if (data.token) {
           Swal.fire(
-            'Good job!',
-            'Welcome aboard ' + response.firstName + ' ' + response.lastName + '!',
-            'success'
+            this.loginSuccessMassage,
+            this.loginWelcome + response.firstName + ' ' + response.lastName + '!',
+            this.loginLogoSuccess
           )
           localStorage.setItem('firstName', response.firstName)
           localStorage.setItem('lastName', response.lastName)
@@ -87,10 +103,11 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/invoices']);
         }
       }, (error) => {
+        this.loader.hide();
         Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Invalid credentials!',
+          icon: this.loginLogoError,
+          title: this.loginErrorTitle,
+          text: this.loginErrorText,
         })
       }, () => {
       }).add(() => {

@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { HttpCommonService } from './http-common.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private httpCommonService: HttpCommonService) { }
 
   login(objReqBody: any): Observable<any> {
-    return this.http.post('https://frontlineebillingassistantapi.azurewebsites.net/api/auth/login', objReqBody);
+    return this.httpCommonService.post('auth/login', objReqBody);
   }
 
 }

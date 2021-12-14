@@ -1,10 +1,10 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, NgZone, OnInit, ViewChild } from '@angular/core';
 import { AllCommunityModules, GridOptions, Module } from '@ag-grid-community/all-modules';
 import { SetFilterModule } from '@ag-grid-enterprise/set-filter';
 import { MenuModule } from '@ag-grid-enterprise/menu';
 import { InvoicingService } from 'src/app/services/invoicing.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { invoiceDetails, casecading, invoiceList } from '../shared/constant';
+import { invoiceDetails, casecading, invoiceList } from '../shared/constants';
 import { DatePipe } from '@angular/common';
 import Swal from 'sweetalert2';
 import { LoaderService } from '../../services/loader.service';
@@ -16,13 +16,9 @@ import { LoaderService } from '../../services/loader.service';
 })
 export class InvoiceDetailsComponent implements OnInit {
   @ViewChild('agGridParentDiv', { read: ElementRef }) public agGridDiv: any;
-  gridColumnApi: any;
-  editingRowIndex: any;
-  @HostListener('window:resize', ['$event'])
-  public onResize(event: any) {
-    this.setGridColSizeAsPerWidth();
-  }
-  public modules: Module[] = [...AllCommunityModules, ...[SetFilterModule, MenuModule]]
+  public gridColumnApi: any;
+  public editingRowIndex: any;
+  public modules: Module[];
   public agGridOption: GridOptions;
   public rowData: any;
   public data: any;
@@ -32,9 +28,9 @@ export class InvoiceDetailsComponent implements OnInit {
   public id: number;
   public saveButton: any;
   public invoiceNumber: any;
-  public invoiceDate: string = new Date().toISOString();
-  public startDate: string = new Date().toISOString();;
-  public endDate: string = new Date().toISOString();;
+  public invoiceDate: string;
+  public startDate: string;
+  public endDate: string;
   public invoiceFormat: any;
   public firmMatterId: any;
   public firmClientMatterId: any;
@@ -99,16 +95,32 @@ export class InvoiceDetailsComponent implements OnInit {
   public inMatter: any;
   public one: any;
   public zero: any;
-  pipe = new DatePipe('en-US');
-  loading$ = this.loader.loading$;
+  public pipe: any;
+  public loading$: any;
+  public windowHeight: number;
+  public offset: number;
+  public alertUpdateTitle: any;
+  public alertUpdatetext: any;
+  public alertWarning: any;
+  public alertSuccess: any;
+  public alertError: any;
+  public alertSuccesfulyMassage: any;
+  public yes: any;
+  public no: any;
 
   constructor(private route: ActivatedRoute, private router: Router, private invoicingService: InvoicingService,
-    public loader: LoaderService) {
+    public loader: LoaderService, private zone: NgZone) {
+    this.pipe = new DatePipe('en-US');
+    this.loading$ = this.loader.loading$;
+    this.modules = [...AllCommunityModules, ...[SetFilterModule, MenuModule]]
     this.one = invoiceList.ONE;
     this.zero = invoiceList.ZERO;
     this.discount = this.zero;
     this.expenses = this.zero;
     this.condition = true;
+    this.invoiceDate = new Date().toISOString();
+    this.startDate = new Date().toISOString();
+    this.endDate = new Date().toISOString();
     this.saveButton = invoiceDetails.SAVE_BUTTTON;
     this.invoiceHeader = invoiceDetails.INVOICE_HEADER;
     this.invoiceNumbers = invoiceDetails.INVOICE_NUMBER;
@@ -145,6 +157,25 @@ export class InvoiceDetailsComponent implements OnInit {
     this.allRowWidth = invoiceDetails.ALL_ROW_WIDTH;
     this.date = invoiceDetails.DATE;
     this.description = invoiceDetails.DESCRIPTION;
+    this.alertUpdateTitle = invoiceDetails.ALERT_UPDATE_TITLE;
+    this.alertUpdatetext = invoiceDetails.ALERT_UPDATE_TEXT;
+    this.alertWarning = invoiceDetails.ALERT_ICON_WARNING;
+    this.alertSuccess = invoiceDetails.ALERT_ICON_SUCCESS;
+    this.alertError = invoiceDetails.ALERT_ICON_ERROR;
+    this.alertSuccesfulyMassage = invoiceDetails.ALERT_SUCCESSFULY_UPDATE;
+    this.yes = invoiceDetails.YES;
+    this.no = invoiceDetails.NO;
+    window.onresize = (e) => {
+      this.zone.run(() => {
+        this.windowHeight = window.innerHeight - this.offset;
+        setTimeout(() => {
+          if (!this.agGridOption || !this.agGridOption.api) {
+            return;
+          }
+          this.agGridOption.api.sizeColumnsToFit();
+        }, 500, true);
+      });
+    };
   }
 
   ngOnInit(): void {
@@ -164,7 +195,7 @@ export class InvoiceDetailsComponent implements OnInit {
   private getGridConfig() {
     let vm = this
     this.agGridOption = {
-      defaultColDef: { flex: this.one, minWidth: this.allRowWidth, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true, },
+      defaultColDef: { flex: this.one, minWidth: this.allRowWidth, sortable: true, filter: 'agTextColumnFilter', resizable: true, sortingOrder: ["asc", "desc"], menuTabs: [], floatingFilter: true, editable: true },
       rowSelection: 'multiple',
       stopEditingWhenCellsLoseFocus: true,
       suppressRowClickSelection: true,
@@ -179,8 +210,6 @@ export class InvoiceDetailsComponent implements OnInit {
       pagination: false,
       context: { componentParent: this },
       suppressContextMenu: true,
-      //noRowsOverlayComponentFramework: NoRowOverlayComponent,
-      // noRowsOverlayComponentParams: { noRowsMessageFunc: () => this.rowData && this.rowData.length ? 'No matching records found for the required search' : 'No invoice details to display' },
       onModelUpdated,
     }
     function onModelUpdated(params: any) {
@@ -195,6 +224,9 @@ export class InvoiceDetailsComponent implements OnInit {
     this.gridApi = params.api;
     this.gridColumnApi = params.columnApi;
     params.api.sizeColumnsToFit();
+    window.onresize = () => {
+      this.gridApi.sizeColumnsToFit();
+    }
   }
 
   private setFilter(event: any) {
@@ -206,8 +238,6 @@ export class InvoiceDetailsComponent implements OnInit {
       {
         headerName: "Status",
         field: 'LineItemStatus',
-        // cellClassRules: ragCellClassRules,
-        //   cellRenderer: ragRenderer,
       },
       {
         headerName: "Rule",
@@ -237,7 +267,7 @@ export class InvoiceDetailsComponent implements OnInit {
         headerName: "Total",
         field: 'Total',
         editable: false,
-      },  // cellStyle: params => params.value == 22.00 ? { color: 'red' } : { color: 'green' }
+      },
       {
         headerName: "Tags",
         field: 'Tags'
@@ -336,17 +366,17 @@ export class InvoiceDetailsComponent implements OnInit {
           this.loader.hide();
           Swal.fire(
             ' ',
-            'Modified Successfully!',
-            'success'
+            this.alertSuccesfulyMassage,
+            this.alertSuccess
           )
           this.getData();
           this.condition = true;
         } else {
           this.loader.hide();
           Swal.fire({
-            icon: 'error',
+            icon: this.alertError,
             title: ' ',
-            text: 'error!',
+            text: this.alertError,
           })
         } this.condition = true;
       }, () => {
@@ -390,32 +420,6 @@ export class InvoiceDetailsComponent implements OnInit {
       })
   }
 
-  private autoSizeAll() {
-    let allColumnIds: any[] = [];
-    let gridColumnApi = this.gridApi.columnApi
-    if (gridColumnApi) {
-      gridColumnApi.getAllColumns().forEach(function (column: any) {
-        allColumnIds.push(column.colId);
-      });
-      gridColumnApi.autoSizeColumns(allColumnIds);
-    }
-  }
-
-  private setGridColSizeAsPerWidth() {
-    setTimeout(() => {
-      this.autoSizeAll();
-      let width = this.zero;
-      let gridColumnApi = this.gridApi.columnApi;
-      if (gridColumnApi) {
-        gridColumnApi.getAllColumns().forEach(function (column: any) {
-          width = width + column.getActualWidth();
-        });
-      }
-      if (this.agGridDiv && width < this.agGridDiv.nativeElement.offsetWidth)
-        this.gridApi.api.sizeColumnsToFit();
-    }, this.one);
-  }
-
   myDateParser(dateStr: string): string {
     let date = dateStr.substring(0, 13);
     let validDate = date
@@ -425,14 +429,14 @@ export class InvoiceDetailsComponent implements OnInit {
   onBack() {
     if (this.condition == false) {
       Swal.fire({
-        title: 'Are you sure?',
-        text: "You have unsaved changes. Do you still want to continue?",
-        icon: 'warning',
+        title: this.alertUpdateTitle,
+        text: this.alertUpdatetext,
+        icon: this.alertWarning,
         showCancelButton: true,
         confirmButtonColor: '#008000',
         cancelButtonColor: '#d33',
-        confirmButtonText: ' Yes ',
-        cancelButtonText: ' No',
+        confirmButtonText: this.yes,
+        cancelButtonText: this.no,
       }).then((result) => {
         if (result.isConfirmed) {
           this.router.navigate(['/invoices']);

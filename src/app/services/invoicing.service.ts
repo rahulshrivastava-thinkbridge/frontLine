@@ -1,41 +1,32 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpCommonService } from './http-common.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InvoicingService {
 
-  constructor(private http: HttpClient) { }
-
-  getInvoiceList() {
-    return this.http.get('https://frontlineebillingassistantapi.azurewebsites.net/api/invoice/listing');
-  }
-
-  getInvoiceDetail(invoiceId: any) {
-    return this.http.get('https://frontlineebillingassistantapi.azurewebsites.net/api/InvoiceLineItem/GetInvoiceLineItemsById', { params: { Id: invoiceId } });
-  }
-
-  getInvoiceFilter(objReqBody) {
-    return this.http.post('https://frontlineebillingassistantapi.azurewebsites.net/api/invoice/listing/filtered', objReqBody)
-  }
+  constructor(private httpCommonService: HttpCommonService) { }
 
   invoicePages(objReqBody) {
-    return this.http.post('https://frontlineebillingassistantapi.azurewebsites.net/api/invoice/listing/paged', objReqBody)
+    return this.httpCommonService.post('invoice/listing/paged', objReqBody)
   }
 
   getInvoiceDetails(InvoiceID: any) {
-    return this.http.get('https://frontlineebillingassistantapi.azurewebsites.net/api/invoicelineitems/listing', { params: { Id: InvoiceID } });
+    return this.httpCommonService.get('invoicelineitems/listing', { params: { Id: InvoiceID } });
   }
 
   getInvoiceDataDetails(InvoiceID: any) {
-    return this.http.get('https://frontlineebillingassistantapi.azurewebsites.net/api/invoice/details', { params: { Id: InvoiceID } });
+    return this.httpCommonService.get('invoice/details', { params: { Id: InvoiceID } });
   }
 
   invoiceLineitemsUpdate(objReqBody: any) {
-    return this.http.post('https://frontlineebillingassistantapi.azurewebsites.net/api/invoicelineitems/update', objReqBody)
+    return this.httpCommonService.post('invoicelineitems/update', objReqBody)
   }
 
 }
+
+
+
+// this.httpClient.get('https://www.userdomain.com/api_name/data/' + this.id);
 

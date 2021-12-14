@@ -11,8 +11,6 @@ import { InvoiceCodeComponentComponent } from './agGridComponents/invoice-code-c
 import { LoginComponent } from './components/login/login.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
-//import { NgxBootstrapIconsModule, allIcons } from 'ngx-bootstrap-icons';
-import { LocationStrategy } from '@angular/common';
 import { HttpInterceptorInterceptor } from './components/shared/http-interceptor.interceptor';
 import { HeaderComponent } from './components/shared/header/header.component';
 import { AuthGuard } from './auth.guard'
@@ -37,12 +35,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MatProgressSpinnerModule ,
+    MatProgressSpinnerModule,
     MatProgressSpinnerModule,
     AgGridModule.withComponents([]),
     NgbModule,
-  //  NgxBootstrapIconsModule.pick(allIcons),
-    BrowserAnimationsModule ,
+    BrowserAnimationsModule,
   ],
   providers: [InvoicingService, AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorInterceptor, multi: true },

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AppComponent } from './app.component';
 import { InvoiceDetailsComponent } from './components/invoice-details/invoice-details.component';
 import { InvoiceListComponent } from './components/invoice-list/invoice-list.component';
 import { LoginComponent } from './components/login/login.component';
@@ -8,7 +7,6 @@ import { UploadInvoiceComponent } from './components/upload-invoice/upload-invoi
 import { AuthGuard } from './auth.guard';
 
 const routes: Routes = [
-  //{ path: '', component: AppComponent},
   {
     path: '',
     redirectTo: '/login',
@@ -21,8 +19,7 @@ const routes: Routes = [
   {
     path: 'uploadinvoices', component: UploadInvoiceComponent, canActivate: [AuthGuard]
   },
- // { path: 'invoicedetail', component: InvoiceDetailsComponent, canActivate: [AuthGuard], data: { breadcrumb: 'invoicedetails' } },
- { path: 'invoicedetail/:id', component: InvoiceDetailsComponent, canActivate: [AuthGuard], data: { breadcrumb: 'invoicedetails' } },
+  { path: 'invoicedetail/:id', component: InvoiceDetailsComponent, canActivate: [AuthGuard], data: { breadcrumb: 'invoicedetails' } },
 ]
 
 @NgModule({

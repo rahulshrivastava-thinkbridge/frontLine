@@ -8,6 +8,12 @@ export const loginForm = {
     PASSWORD_NAME_ERROR_MINLENGTH: 'Password must be at least 6 characters',
     REMEMBER_ME: 'Remember me',
     FORGOT_PASSWORD: 'Forgot Password ?',
+    LOGIN_SUCCES_MASSAGE: 'Good job!',
+    LOGIN_WELCOME: 'Welcome aboard ',
+    LOGIN_LOGO_SUCCESS: 'success',
+    LOGIN_LOGO_ERROR: 'error',
+    LOGIN_ERROR_TEXT: 'Invalid credentials! ',
+    LOGIN_ERROR_TITLE: 'Oops...'
 }
 
 export const invoiceList = {
@@ -57,7 +63,15 @@ export const invoiceDetails = {
     NULL_VALUE: 'NA',
     ALL_ROW_WIDTH: '150',
     DATE: '200',
-    DESCRIPTION: '400'
+    DESCRIPTION: '400' ,
+    ALERT_UPDATE_TITLE: 'Are you sure?',
+    ALERT_UPDATE_TEXT: 'You have unsaved changes. Do you still want to continue?',
+    ALERT_ICON_WARNING: 'warning',
+    ALERT_ICON_SUCCESS: 'success',
+    ALERT_ICON_ERROR: 'error',
+    ALERT_SUCCESSFULY_UPDATE: 'Modified Successfully!',
+    YES: 'Yes',
+    NO: 'No'
 }
 
 export const casecading = {
